@@ -2,7 +2,7 @@
 
 
 namespace db;
-require '../config/dbSecret.php';
+require ROOT . '/php/config/dbSecret.php';
 use PDO;
 use PDOException;
 
@@ -12,8 +12,7 @@ use PDOException;
  * Gestionaire des object PDO de connexion à la base
  * de donnée. Connecteur/Déconnecteur.
  *
- * @package     NomPackage
- * @subpackage  NomSubPackage
+ * @package     db
  *
  * @version     1.0
  * @author      Jérémi N 'EndMove'
@@ -39,12 +38,7 @@ class DBManager {
       $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       return $bdd;
     } Catch (PDOException $e) {
-      $errArray[] = array(
-        'message' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'code' => $e->getCode()
-      );
+      addError($e, $errArray);
       return false;
     }
   }

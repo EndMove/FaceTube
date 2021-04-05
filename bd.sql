@@ -7,8 +7,8 @@
 CREATE TABLE IF NOT EXISTS compte (
   id_compte INT UNSIGNED NOT NULL AUTO_INCREMENT,
   nom VARCHAR(45) NOT NULL,
-  login CHARCHAR(35) NOT NULL,
   prenom VARCHAR(45) NOT NULL,
+  login VARCHAR(35) NOT NULL,
   couriel VARCHAR(255) NOT NULL,
   mot_de_passe VARCHAR(255) NOT NULL,
   est_bloque BOOLEAN NOT NULL DEFAULT false,
@@ -63,4 +63,24 @@ CREATE TABLE IF NOT EXISTS demande (
   PRIMARY KEY (id_compte_demandeur, id_compte_destinataire),
   FOREIGN KEY (id_compte_demandeur) REFERENCES compte (id_compte) ON DELETE CASCADE,
   FOREIGN KEY (id_compte_destinataire) REFERENCES compte (id_compte) ON DELETE CASCADE
+);
+
+-- Table Voir
+CREATE TABLE IF NOT EXISTS voir (
+  id_compte INT UNSIGNED NOT NULL,
+  id_video INT UNSIGNED NOT NULL,
+  date_vue DATETIME NOT NULL,
+  PRIMARY KEY (id_compte, id_video),
+  FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
+  FOREIGN KEY (id_video) REFERENCES video (id_video) ON DELETE CASCADE
+);
+
+-- Table Evaluer
+CREATE TABLE IF NOT EXISTS evaluer (
+  id_compte INT UNSIGNED NOT NULL,
+  id_video INT UNSIGNED NOT NULL,
+  evaluation INT NOT NULL,
+  PRIMARY KEY (id_compte, id_video),
+  FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
+  FOREIGN KEY (id_video) REFERENCES video (id_video) ON DELETE CASCADE
 );
