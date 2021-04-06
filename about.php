@@ -1,5 +1,5 @@
 <?php
-$page = "contact"; include("core.php");
+$page = "about"; include("core.php");
 /**
  * Powered By EndMove 2020-2021 All Rights Reserved.
  * Version: 1.0 - Date: 24-12-2020

@@ -1,8 +1,6 @@
 <?php
 require 'core.php';
 use db\DBManager as dbm;
-use dataUtils\secure as secure;
-use dataUtils\verify;
 
 $errorArray = array();  # Tableau d'erreurs
 
@@ -25,3 +23,20 @@ var_dump(verify::email(NULL));
 
 # Simulation inscription
 $member = new member\Member($bdd);
+$member->auth("superjeremi1302@gmail.com", "End42_", $errorArray);
+
+# verif
+var_dump(verify::password("salutP151", $errorArray));
+var_dump(verify::passwordMatch("salutP151", "salutP51", $errorArray));
+var_dump($errorArray);
+
+# secure
+echo secure::string("Jérémi Nihart");
+
+if (0) {
+  echo "wowow";
+} else {
+  echo "nndndndn";
+}
+
+var_dump($_SERVER);

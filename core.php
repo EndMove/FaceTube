@@ -27,6 +27,9 @@ require ROOT . '/php/libraries/PHPMailer/src/SMTP.php';
 # Fonctions principales
 require ROOT . '/php/functions/mainFunctions.php';
 
+# Fonctions de vérification de données
+require ROOT . '/php/functions/dataFunctions.php';
+
 
 /*=========================================================================*
  *                                 Classes                                 *
@@ -34,9 +37,6 @@ require ROOT . '/php/functions/mainFunctions.php';
 
 # DBManager classe
 require ROOT . '/php/class/DBManager.php';
-
-# dataUtils classe
-require ROOT . '/php/class/dataUtils.php';
 
 # Member classe
 require ROOT . '/php/class/Member.php';

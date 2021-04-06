@@ -1,9 +1,32 @@
 <?php
-$page = "contact"; include("core.php");
-/**
- * Powered By EndMove 2020-2021 All Rights Reserved.
- * Version: 1.0 - Date: 24-12-2020
- */
+$page = "login"; include("core.php");
+
+// Variable d'information sur les erreurs
+$infoErrors = array();
+
+// Redirige l'utilisateur
+if (isConnected()) {
+  if (isset($_GET['redirect'])) {
+    header('Location: ' . urldecode($_GET['redirect']));
+    die();
+  } else {
+    header('Location: ' . getRootUrl(true) . '/home.php');
+    die();
+  }
+}
+
+// Connexion
+if (isset($_POST['submit'])) {
+  $email = secure::string($_POST['email']);
+  $password = secure::string($_POST['password']);
+
+  $member = new member\Member($bdd);
+  $id = $member->auth($email, $password, $infoErrors);
+  if ($id) {
+    $member->import($id, $infoErrors);
+    $_SESSION['account'] = $member->getData();
+  }
+}
 
 ?>
 <!DOCTYPE html>
@@ -22,9 +45,10 @@ $page = "contact"; include("core.php");
 
   <main>
     <h1 class="text-center">Connexion</h1>
+    <?php showError($infoErrors); ?>
     <form id="form" method="POST" action="">
       <div class="field">
-        <label for="email">Email</label><input type="email" id="email" name="email" placeholder="contact@endmove.eu">
+        <label for="email">Email</label><input type="email" id="email" name="email" placeholder="contact@endmove.eu" value="<?php echo isset($email) ? $email : ''; ?>">
       </div>
       <div class="field">
         <label for="password">Mot de passe</label><input type="password" id="password" name="password" placeholder="***********">

@@ -6,7 +6,10 @@
  */
 
 const CONFIG = array(
-  "smtpAuth" => array(                # Configuration SMTP
+  "websiteName" => "FaceTube",                        # Nom du site web
+  "websiteFolder" => "/HELMo/FaceTube",               # Dossier dans lequel ce trouve le site
+  "smtpAuth" => array(                                # Configuration SMTP
+    "smtpactived" => false,
     "smtpauthentication" => true,
     "smtpcharset" => "UTF-8",
     "smtpencryption" => "tls",

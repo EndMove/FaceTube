@@ -1,28 +1,5 @@
 <?php
-$page = "contact"; include("core.php");
-use dataUtils\secure;
-
-/**
- * Powered By EndMove 2020-2021 All Rights Reserved.
- * Version: 1.0 - Date: 24-12-2020
- */
-
-if (isset($_POST['submit'])) {
-  $lastname = secure::string($_POST['lastname']);
-  $firstname = secure::string($_POST['firstname']);
-  $pseudonym = secure::string($_POST['pseudonym']);
-  $email = secure::string($_POST['email']);
-  $password = secure::string($_POST['password']);
-  $repeat_password = secure::string($_POST['repeat_password']);
-
-  $data = array(
-    "firstName" => "lmao"
-  );
-if (empty($errArray)) {
-
-}
-}
-
+include("php/includes/pages/register.inc.php");
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -40,6 +17,7 @@ if (empty($errArray)) {
 
   <main>
     <h1 class="text-center">Inscription</h1>
+    <?php showError($infoErrors); showSuccess($infoSucc); ?>
     <form id="form" method="POST" action="">
       <div class="split">
         <div class="field">
