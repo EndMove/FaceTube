@@ -6,6 +6,7 @@ include("php/includes/pages/friends.inc.php");
 <head>
   <!-- Header -->
   <?php include("php/includes/head.inc.php"); ?>
+  <title><?php echo CONFIG['websiteName'] ?> | Liste d'amis</title>
   <!-- End Header -->
 </head>
 <body>

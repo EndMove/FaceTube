@@ -27,6 +27,9 @@ if (isset($_POST['submit'])) {
     $member->setData($data);
 
     if ($member->create($infoErrors)) {
+      $body = "Bonjour $firstname,<br>Bienvenue chez " . CONFIG['websiteName'] . ".<br>Profitez des vidéos et chaînes de vos amis.";
+      $subject = "Bienvenue chez " . CONFIG['websiteName'];
+      sendEmail($infoErrors, $body, $subject, $email);
       $infoSucc = "Votre compte à été créé avec succès. Connectez vous <a href='index.php'>ici</a>";
     }
   }

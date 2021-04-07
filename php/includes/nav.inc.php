@@ -6,7 +6,7 @@
         <li><a href="contact.php" <?php if($page=='contact') echo 'class="active"'; ?>>Contact</a></li>
         <li><a href="about.php" <?php if($page=='about') echo 'class="active"'; ?>>À propos</a></li>
       <?php if (isConnected()) { ?>
-        <li class="align-right"><a href="myaccount.php"><?php echo($_SESSION['account']['firstname'].' '.$_SESSION['account']['lastname']); ?></a></li>
+        <li class="align-right"><a href="myaccount.php" <?php if($page=='account') echo 'class="active"'; ?>><?php echo($_SESSION['account']['firstname'].' '.$_SESSION['account']['lastname']); ?></a></li>
         <li class="red"><a href="logout.php">Déconnexion</a></li>
       <?php } else { ?>
         <li class="align-right"><a href="index.php" <?php if($page=='login') echo 'class="active"'; ?>>Connexion</a></li>

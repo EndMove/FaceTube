@@ -241,7 +241,7 @@ class Member {
    * Permet d'authentifier un utilisateur renvoie un id si succès.
    *
    * @return      integer|boolean L'id du compte membre ou false en cas d'erreur.
-   * @param       string $email Adresse email du compte.
+   * @param       string $value Adresse email du compte ou login du compte.
    * @param       string $password Le mot de passe du compte.
    * @param       array $errArray Tableau d'erreurs du projet.
    *
@@ -249,14 +249,20 @@ class Member {
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function auth($email, $password, &$errArray) {
+  public function auth($value, $password, &$errArray) {
     try {
-      $query = $this->bdd->prepare("SELECT id_compte, est_bloque FROM compte WHERE couriel = :couriel AND mot_de_passe = :mot_de_passe");
-      $query->bindValue(':couriel', $email, PDO::PARAM_STR);
+      $value = strtolower(removeAccents($value));
+      if (verify::email($value)) {
+        $query = $this->bdd->prepare("SELECT id_compte, est_bloque FROM compte WHERE couriel = :couriel AND mot_de_passe = :mot_de_passe");
+        $query->bindValue(':couriel', $value, PDO::PARAM_STR);
+      } else {
+        $query = $this->bdd->prepare("SELECT id_compte, est_bloque FROM compte WHERE login = :login AND mot_de_passe = :mot_de_passe");
+        $query->bindValue(':login', $value, PDO::PARAM_STR);
+      }
       $query->bindValue(':mot_de_passe', hashPassword($password), PDO::PARAM_STR);
       if ($query->execute()) {
         if ($query->rowCount() <= 0) {
-          addError("Mot de passe et ou adresse email incorrect", $errArray);
+          addError("Identifiants incorrects ou compte inexistant", $errArray);
           return false;
         }
         $data = $query->fetch(PDO::FETCH_ASSOC);

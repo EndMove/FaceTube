@@ -100,7 +100,7 @@ class verify {
    * @author      Jérémi N 'EndMove'
    */
   public static function bool($value, &$errArray = null) {
-    if (is_bool($value)) return true;
+    if (is_bool($value) || self::enum($value)) return true;
     addError("La valeur boolean n'est pas valide", $errArray);
     return false;
   }

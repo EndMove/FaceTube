@@ -1,39 +1,12 @@
 <?php
-$page = "login"; include("core.php");
-
-// Variable d'information sur les erreurs
-$infoErrors = array();
-
-// Redirige l'utilisateur
-if (isConnected()) {
-  if (isset($_GET['redirect'])) {
-    header('Location: ' . urldecode($_GET['redirect']));
-    die();
-  } else {
-    header('Location: ' . getRootUrl(true) . '/home.php');
-    die();
-  }
-}
-
-// Connexion
-if (isset($_POST['submit'])) {
-  $email = secure::string($_POST['email']);
-  $password = secure::string($_POST['password']);
-
-  $member = new member\Member($bdd);
-  $id = $member->auth($email, $password, $infoErrors);
-  if ($id) {
-    $member->import($id, $infoErrors);
-    $_SESSION['account'] = $member->getData();
-  }
-}
-
+include("php/includes/pages/index.inc.php");
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <!-- Header -->
   <?php include("php/includes/head.inc.php"); ?>
+  <title><?php echo CONFIG['websiteName'] ?> | Connexion</title>
   <!-- End Header -->
 </head>
 <body>
@@ -48,7 +21,7 @@ if (isset($_POST['submit'])) {
     <?php showError($infoErrors); ?>
     <form id="form" method="POST" action="">
       <div class="field">
-        <label for="email">Email</label><input type="email" id="email" name="email" placeholder="contact@endmove.eu" value="<?php echo isset($email) ? $email : ''; ?>">
+        <label for="login">Email/Login</label><input type="text" id="login" name="login" placeholder="contact@endmove.eu / EndMove" value="<?php echo isset($login) ? $login : ''; ?>">
       </div>
       <div class="field">
         <label for="password">Mot de passe</label><input type="password" id="password" name="password" placeholder="***********">

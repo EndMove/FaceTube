@@ -6,6 +6,7 @@ include("php/includes/pages/register.inc.php");
 <head>
   <!-- Header -->
   <?php include("php/includes/head.inc.php"); ?>
+  <title><?php echo CONFIG['websiteName'] ?> | S'inscrire</title>
   <!-- End Header -->
 </head>
 <body>

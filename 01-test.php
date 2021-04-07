@@ -39,4 +39,10 @@ if (0) {
   echo "nndndndn";
 }
 
-var_dump($_SERVER);
+if (sendEmail($errorArray, "Je suis le contenu <br> de l'email mdr", "Un nouvel email", "superjeremi1302@gmail.com")) {
+  echo "<b>EMAIL HAS BEEN SENT</b>";
+  var_dump($errorArray);
+} else {
+  echo "<b>EMAIL COULD NOT BE SEND</b>";
+  var_dump($errorArray);
+}

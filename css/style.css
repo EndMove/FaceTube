@@ -611,6 +611,9 @@ textarea {
 input:focus, textarea:focus, select:focus {
   border-color: #2ecc71;
 }
+input:disabled {
+  color: #646464;
+}
 /*colors*/
 input[type=submit].blue:hover, a.btn-link.blue:hover {
   background-color: #235577;

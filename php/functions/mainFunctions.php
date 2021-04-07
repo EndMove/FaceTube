@@ -114,19 +114,60 @@ function removeAccents($string) {
   return $string;
 }
 
+// si connecté
 function isConnected() {
   return isset($_SESSION['account']);
 }
 
+// get root url
 function getRootUrl($configFolder = false) {
   $ssl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
   $ssl .= '://' . $_SERVER['HTTP_HOST'];
   return $configFolder ? $ssl . CONFIG['websiteFolder'] : $ssl;
 }
 
+// get redirect url
 function getRedirectUrl($tag = null) {
   $link = getRootUrl(true) . '/index.php?redirect=';
   $link .= urlencode(getRootUrl() . $_SERVER['REQUEST_URI']);
   if (!empty($tag)) $link .= $tag;
   return $link;
+}
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+function sendEmail($errArray, $body, $subject, $to, $attachment = NULL) {
+  $mail = new PHPMailer();
+  try {
+    $mail->CharSet = CONFIG['email']['charset'];
+    if (CONFIG['email']['smtpenabled']) {
+      if (CONFIG['email']['smtpdebug']) {
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+      }
+      $mail->isSMTP();
+      $mail->Host         = CONFIG['email']['smtphost'];
+      $mail->SMTPAuth     = CONFIG['email']['smtpauthentication'];
+      $mail->Username     = CONFIG['email']['smtpusername'];
+      $mail->Password     = CONFIG['email']['smtppassword'];
+      $mail->SMTPSecure   = CONFIG['email']['smtpencryption'];
+      $mail->Port         = CONFIG['email']['smtpport'];
+    }
+    $mail->setFrom(CONFIG['email']['senderemail'], CONFIG['email']['sendername']);
+    $mail->addReplyTo(CONFIG['email']['replyemail'], CONFIG['email']['replyname']);
+    $mail->addAddress($to);
+    if (isset($attachment)) {
+      $mail->addAttachment($attachment['path'], $attachment['name']);
+    }
+    $mail->isHTML(true);
+    $mail->Subject        = $subject;
+    $mail->Body           = $body;
+    if ($mail->send()) {
+      return true;
+    }
+  } catch (Exception $e) {
+    addError($e, $errArray, true);
+  }
+  addError("Erreur lors de l'envoie de l'email", $errArray);
+  return false;
 }

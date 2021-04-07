@@ -1,5 +1,5 @@
 <?php
-$page = "account"; include("core.php");
+$page = "search"; include("core.php");
 
 // Vérifier si le membre est connecté
 if (!isConnected()) {
