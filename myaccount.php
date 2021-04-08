@@ -1,44 +1,5 @@
 <?php
 include("php/includes/pages/myaccount.inc.php");
-
-// Variable d'information sur les erreurs, succès.
-$infoErrors = array();
-$infoSucc   = '';
-
-if (isset($_POST['submit'])) {
-  $lastname = secure::string($_POST['lastname']);
-  $firstname = secure::string($_POST['firstname']);
-  $pseudonym = secure::string($_POST['pseudonym']);
-  $password = secure::string($_POST['password']);
-  $repeat_password = secure::string($_POST['repeat_password']);
-  $status = true;
-
-  $data = array(
-    'lastname' => $lastname,
-    'firstname' => $firstname,
-    'login' => $pseudonym
-  );
-
-  if (!empty($password)) {
-    if (verify::password($password, $infoErrors) && verify::passwordMatch($password, $repeat_password, $infoErrors)) {
-      $data['password'] = $password;
-    } else {
-      $status = false;
-    }
-  }
-
-  if ($status) {
-    $member = new member\Member($bdd);
-    if ($member->import($_SESSION['account']['id'], $infoErrors)) {
-      $member->setData($data);
-      if ($member->update($infoErrors)) {
-        $_SESSION['account'] = $member->getData();
-        $infoSucc = "Les informations de votre compte on été mises à jour";
-      }
-    }
-  }
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">

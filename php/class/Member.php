@@ -5,7 +5,7 @@
  *
  * @package     member
  *
- * @version     1.0
+ * @version     1.1
  *
  * @author      Jérémi Nihart <contact@endmove.eu>
  * @copyright   © 2021 EndMove, Tous droits réservés.
@@ -31,7 +31,7 @@ use verify;
  *
  * @package     member
  *
- * @version     1.0
+ * @version     1.1
  * @see         verify
  * @see         addError()
  * @see         removeAccents()
@@ -59,7 +59,7 @@ class Member {
   }
 
   /**
-   * Récupérer une donnée de l'utilisateur.
+   * Récupérer une donnée local de l'utilisateur.
    *
    * @return      string Contenu de la donnée utilisateur demandé.
    * @param       string $name Nom de la donnée utilisateur souhaité.
@@ -78,7 +78,7 @@ class Member {
   }
 
   /**
-   * Éditer une donnée de l'utilisateur en local.
+   * Éditer une donnée local de l'utilisateur.
    * Voir {@see update()} pour mettre à jour en base de données.
    *
    * @param       string $name Nom de la donnée à modifier.
@@ -110,26 +110,7 @@ class Member {
   }
 
   /**
-   * Récupérer des données local de l'utilisateur
-   *
-   * @return      array Tableau de données du membre.
-   *
-   * @since 1.0
-   *
-   * @author      Jérémi N 'EndMove'
-   */
-  public function getData() {
-    $data = array();
-    foreach ($this->data as $name => $value) {
-      if (!in_array($name, self::CANT_GET)) {
-        $data[$name] = $value;
-      }
-    }
-    return $data;
-  }
-
-  /**
-   * Éditer des données de l'utilisateur en local.
+   * Éditer des données locales de l'utilisateur.
    * Voir {@see update()} pour mettre à jour en base de données.
    *
    * @param       array $dataArray Tableau de données :
@@ -161,8 +142,66 @@ class Member {
   }
 
   /**
-   * Description de la méthode.
-   * Explication supplémentaire si nécessaire...
+   * Récupérer des données locales de l'utilisateur
+   *
+   * @return      array Tableau de données du membre.
+   *
+   * @since 1.0
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getData() {
+    $data = array();
+    foreach ($this->data as $name => $value) {
+      if (!in_array($name, self::CANT_GET)) {
+        $data[$name] = $value;
+      }
+    }
+    return $data;
+  }
+
+  /**
+   * Récupère l'id d'un membre en fonction d'un login/email.
+   *
+   * @return      int L'id de l'utilisateur.
+   * @param       array $errArray Tableau d'erreur du siteweb.
+   * @param       string $value Un <u>email</u> ou un <u>login</u>.
+   *
+   * @since 1.1
+   *
+   * @see         removeAccents()
+   * @see         verify::email()
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getID(&$errArray, $value) {
+    try {
+      $value = strtolower(removeAccents($value));
+      if (verify::email($value)) {
+        $query = $this->bdd->prepare("SELECT id_compte
+                                      FROM compte
+                                      WHERE couriel = :couriel");
+        $query->bindValue(':couriel', $value, PDO::PARAM_STR);
+      } else {
+        $query = $this->bdd->prepare("SELECT id_compte
+                                      FROM compte
+                                      WHERE login = :login");
+        $query->bindValue(':login', $value, PDO::PARAM_STR);
+      }
+      if ($query->execute()) {
+        return $query->fetch(PDO::FETCH_ASSOC)['id_compte'];
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
+   * Permet de vérifier si toutes les données
+   * locales respectent les attentes.
    *
    * @return      boolean True: données valides <br>
    *                      False: donnée(s) invalide(s)
@@ -197,10 +236,11 @@ class Member {
   }
 
   /**
-   * Vérifie si une donnée avec l'email ou le login de cet objet existe déjà.
+   * Permet de vérifier si l'email ou le login <b>lacal</b>
+   * est déjà ou non utilisé par un autre membre <b>en base de données</b>.
    *
-   * @return      boolean True: donné existe <br>
-   *                      False: donnée n'existe pas.
+   * @return      boolean True: donnée déjà utilisé <br>
+   *                      False: donnée pas encore utilisé.
    * @param       string $type <b>'email'</b> check with email <br>
    *                           <b>'login'</b> check with login
    * @param       array $errArray Tableau d'erreurs du projet.
@@ -209,16 +249,20 @@ class Member {
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function exist($type = 'email', &$errArray = null) {
+  private function used($type = 'email', &$errArray = null) {
     try {
       switch ($type) {
         case 'email':
-          $query = $this->bdd->prepare("SELECT id_compte FROM compte WHERE couriel = :email AND id_compte != :id");
+          $query = $this->bdd->prepare("SELECT id_compte
+                                        FROM compte
+                                        WHERE couriel = :email AND id_compte != :id");
           $query->bindValue(':email', $this->data['email'], PDO::PARAM_STR);
           $query->bindValue(':id', $this->data['id'], PDO::PARAM_INT);
           break;
         default:
-          $query = $this->bdd->prepare("SELECT id_compte FROM compte WHERE login = :login AND id_compte != :id");
+          $query = $this->bdd->prepare("SELECT id_compte
+                                        FROM compte
+                                        WHERE login = :login AND id_compte != :id");
           $query->bindValue(':login', $this->data['login'], PDO::PARAM_STR);
           $query->bindValue(':id', $this->data['id'], PDO::PARAM_INT);
           break;
@@ -238,25 +282,59 @@ class Member {
   }
 
   /**
+   * Vérifie si il exist un utilisateur avec cet id.
+   *
+   * @return      boolean True: Il exist un compte <br>
+   *                      False: Il n'exist aucun compte
+   * @param       array $errArray Tableau d'erreurs du projet.
+   * @param       int $id L'id du compte de l'utilsiateur.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function exist(&$errArray, $id) {
+    try {
+      $query = $this->bdd->prepare("SELECT id_compte
+                                    FROM compte
+                                    WHERE id_compte = :id");
+      $query->bindValue(':id', $id, PDO::PARAM_INT);
+      if ($query->execute()) {
+        if ($query->rowCount() > 0) return true;
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
    * Permet d'authentifier un utilisateur renvoie un id si succès.
    *
    * @return      integer|boolean L'id du compte membre ou false en cas d'erreur.
+   * @param       array $errArray Tableau d'erreurs du projet.
    * @param       string $value Adresse email du compte ou login du compte.
    * @param       string $password Le mot de passe du compte.
-   * @param       array $errArray Tableau d'erreurs du projet.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function auth($value, $password, &$errArray) {
+  public function auth(&$errArray, $value, $password) {
     try {
       $value = strtolower(removeAccents($value));
       if (verify::email($value)) {
-        $query = $this->bdd->prepare("SELECT id_compte, est_bloque FROM compte WHERE couriel = :couriel AND mot_de_passe = :mot_de_passe");
+        $query = $this->bdd->prepare("SELECT id_compte, est_bloque
+                                      FROM compte
+                                      WHERE couriel = :couriel AND mot_de_passe = :mot_de_passe");
         $query->bindValue(':couriel', $value, PDO::PARAM_STR);
       } else {
-        $query = $this->bdd->prepare("SELECT id_compte, est_bloque FROM compte WHERE login = :login AND mot_de_passe = :mot_de_passe");
+        $query = $this->bdd->prepare("SELECT id_compte, est_bloque
+                                      FROM compte
+                                      WHERE login = :login AND mot_de_passe = :mot_de_passe");
         $query->bindValue(':login', $value, PDO::PARAM_STR);
       }
       $query->bindValue(':mot_de_passe', hashPassword($password), PDO::PARAM_STR);
@@ -296,18 +374,16 @@ class Member {
    */
   public function create(&$errArray) {
     if (!$this->check($errArray)) return false;
-    if ($this->exist('email', $errArray)) {
+    if ($this->used('email', $errArray)) {
       addError("Un compte avec cette adresse email exist déjà", $errArray);
       return false;
-    } else if ($this->exist('login', $errArray)) {
+    } else if ($this->used('login', $errArray)) {
       addError("Un compte avec ce login exist déjà", $errArray);
       return false;
     }
     try {
-      $query = $this->bdd->prepare("INSERT INTO compte
-                                      (id_compte, nom, prenom, login, couriel, mot_de_passe, est_bloque)
-                                    VALUES
-                                      (NULL, :nom, :prenom, :login, :couriel, :mot_de_passe, :est_bloque)");
+      $query = $this->bdd->prepare("INSERT INTO compte (id_compte, nom, prenom, login, couriel, mot_de_passe, est_bloque)
+                                    VALUES (NULL, :nom, :prenom, :login, :couriel, :mot_de_passe, :est_bloque)");
       $query->bindValue(':nom', $this->data['lastname'], PDO::PARAM_STR);
       $query->bindValue(':prenom', $this->data['firstname'], PDO::PARAM_STR);
       $query->bindValue(':login', $this->data['login'], PDO::PARAM_STR);
@@ -328,7 +404,7 @@ class Member {
   }
 
   /**
-   * Permet de mettre à jour un membre avec les données cocale de l'objet.
+   * Permet de mettre à jour un membre avec les données cocales de l'objet.
    *
    * @return      boolean True: mise à jour réussie <br>
    *                      False: échec mise à jour.
@@ -344,19 +420,17 @@ class Member {
       addError("L'ID du compte à mettre à jour est inconnue", $errArray);
       return false;
     }
-    if ($this->exist('email', $errArray)) {
+    if ($this->used('email', $errArray)) {
       addError("Un compte avec cette adresse email exist déjà", $errArray);
       return false;
-    } else if ($this->exist('login', $errArray)) {
+    } else if ($this->used('login', $errArray)) {
       addError("Un compte avec ce login exist déjà", $errArray);
       return false;
     }
     try {
       $query = $this->bdd->prepare("UPDATE compte
-                                    SET
-                                      nom = :nom, prenom = :prenom, login = :login, couriel = :couriel, mot_de_passe = :mot_de_passe, est_bloque = :est_bloque
-                                    WHERE 
-                                      id_compte = :id");
+                                    SET nom = :nom, prenom = :prenom, login = :login, couriel = :couriel, mot_de_passe = :mot_de_passe, est_bloque = :est_bloque
+                                    WHERE id_compte = :id");
       $query->bindValue(':nom', $this->data['lastname'], PDO::PARAM_STR);
       $query->bindValue(':prenom', $this->data['firstname'], PDO::PARAM_STR);
       $query->bindValue(':login', $this->data['login'], PDO::PARAM_STR);
@@ -377,7 +451,19 @@ class Member {
     return false;
   }
 
-  public function import($id, &$errArray) {
+  /**
+   * Importer les données présentes en base de données en local.
+   *
+   * @return      boolean True: Importation réussie <br>
+   *                      False: Échec importation.
+   * @param       array $errArray Tableau d'erreurs.
+   * @param       int $id L'id du membre.
+   *
+   * @since 1.0
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function import(&$errArray, $id) {
     $id = empty($id) ? $this->data['id'] : $id;
     try {
       $query = $this->bdd->prepare("SELECT * FROM compte WHERE id_compte = :id");
@@ -400,6 +486,241 @@ class Member {
       } else {
         $query->closeCursor();
         addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
+   * Récupérer les demandes d'ami sous forme d'un tableau numéroté.
+   *
+   * @return      array Tableau des demandes d'ami.
+   * @param       array $errArray Tableau d'erreurs.
+   * @param       int $id ID du membre auquel récupérer les demandes.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getFriendRequestsReceived(&$errArray, $id = null) {
+    $id = empty($id) ? $this->data['id'] : $id;
+    try {
+      $query = $this->bdd->prepare("SELECT c.id_compte AS id, c.nom AS lastname, c.prenom AS firstname, c.login
+                                    FROM demande d JOIN compte c ON (d.id_compte_demandeur=c.id_compte)
+                                    WHERE d.id_compte_destinataire = :id AND d.est_acceptee = false");
+      $query->bindValue(':id', $id, PDO::PARAM_INT);
+      if ($query->execute()) {
+        if ($query->rowCount() <= 0) {
+          return 'none';
+        }
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
+   * Récupérer les demandes d'ami envoyées sous forme d'un tableau numéroté.
+   *
+   * @return      array Tableau des demandes d'ami envoyées.
+   * @param       array $errArray Tableau d'erreurs.
+   * @param       int $id ID du membre auquel récupérer les demandes.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getFriendRequestsSent(&$errArray, $id = null) {
+    $id = empty($id) ? $this->data['id'] : $id;
+    try {
+      $query = $this->bdd->prepare("SELECT c.id_compte AS id, c.nom AS lastname, c.prenom AS firstname, c.login
+                                    FROM demande d JOIN compte c ON (d.id_compte_destinataire=c.id_compte)
+                                    WHERE d.id_compte_demandeur = :id AND d.est_acceptee = false");
+      $query->bindValue(':id', $id, PDO::PARAM_INT);
+      if ($query->execute()) {
+        if ($query->rowCount() <= 0) {
+          return 'none';
+        }
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
+   * Récupérer la liste d'ami sous forme d'un tableau numéroté.
+   *
+   * @return      array Tableau d'amis.
+   * @param       array $errArray Tableau d'erreurs.
+   * @param       int $id ID du membre auquel récupérer les amis.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getFriendList(&$errArray, $id = null) {
+    $id = empty($id) ? $this->data['id'] : $id;
+    try {
+      $query = $this->bdd->prepare("SELECT c.id_compte AS id, c.nom AS lastname, c.prenom AS firstname, c.login
+                                    FROM demande d JOIN compte c ON (d.id_compte_demandeur=c.id_compte)
+                                    WHERE d.id_compte_destinataire = :id AND d.est_acceptee = true
+                                    UNION
+                                    SELECT c.id_compte AS id, c.nom AS lastname, c.prenom AS firstname, c.login
+                                    FROM demande d JOIN compte c ON (d.id_compte_destinataire=c.id_compte)
+                                    WHERE d.id_compte_demandeur = :id AND d.est_acceptee = true");
+      $query->bindValue(':id', $id, PDO::PARAM_INT);
+      if ($query->execute()) {
+        if ($query->rowCount() <= 0) {
+          return 'none';
+        }
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
+   * Effectuer une action sur la relation d'amitié
+   * (ajouter, accepter, refuser, supprimer, annuler).
+   *
+   * @return      boolean True: succès <br>
+   *                      False: erreur.
+   * @param       array $errArray Tableau d'erreurs.
+   * @param       int $id ID du membre effectuant l'action.
+   * @param       int $idFriend ID du membre sur lequel effectuer l'action.
+   * @param       string $status L'action. Les disponibles sont:<br>
+   *                             <ul>
+   *                              <li>'add' => envoyer une demande d'ami ;</li>
+   *                              <li>'accept' => accepter une demande d'ami ;</li>
+   *                              <li>'reject' => refuser une demande d'ami ;</li>
+   *                              <li>'cancel' => annuler une demande envoyer, en attente ;</li>
+   *                              <li>'remove' => supprimer un ami.</li>
+   *                             </ul>
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function updateFriend(&$errArray, $id, $idFriend, $status) {
+    if ($id == $idFriend) {
+      addError("Vous ne pouvez pas vous inviter vous même et ou vous supprimer des amis", $errArray);
+      return false;
+    }
+    try {
+      switch ($status) {
+        case 'add':
+          $query = $this->bdd->prepare("SELECT 'ok' AS status
+                                        FROM demande
+                                        WHERE id_compte_destinataire = :id AND id_compte_demandeur = :id_friend
+                                        UNION
+                                        SELECT 'ok' AS status
+                                        FROM demande
+                                        WHERE id_compte_demandeur = :id AND id_compte_destinataire = :id_friend");
+          $query->bindValue(':id', $id, PDO::PARAM_INT);
+          $query->bindValue(':id_friend', $idFriend, PDO::PARAM_INT);
+          if (!$query->execute()) {
+            $query->closeCursor();
+            addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+          } else {
+            if ($query->rowCount() > 0) {
+              $query->closeCursor();
+              addError("Vous avez déjà demandé ou reçu une demande d'ami de cette personne", $errArray);
+            } else {
+              $query = $this->bdd->prepare("INSERT INTO demande SET id_compte_demandeur = :id, id_compte_destinataire = :id_friend");
+              $query->bindValue(':id', $id, PDO::PARAM_INT);
+              $query->bindValue(':id_friend', $idFriend, PDO::PARAM_INT);
+              if (!$query->execute()) {
+                $query->closeCursor();
+                addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+              } else {
+                $query->closeCursor();
+                return true;
+              }
+            }
+          }
+          break;
+        case 'accept':
+          $query = $this->bdd->prepare("SELECT 'ok' AS status
+                                        FROM demande
+                                        WHERE id_compte_destinataire = :id AND id_compte_demandeur = :id_friend AND est_acceptee = false");
+          $query->bindValue(':id', $id, PDO::PARAM_INT);
+          $query->bindValue(':id_friend', $idFriend, PDO::PARAM_INT);
+          if (!$query->execute()) {
+            $query->closeCursor();
+            addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+          } else {
+            if ($query->rowCount() <= 0) {
+              $query->closeCursor();
+              addError("Vous n'avez aucune demande en cours avec cette personne", $errArray);
+            } else {
+              $query = $this->bdd->prepare("UPDATE demande
+                                            SET est_acceptee = true
+                                            WHERE (id_compte_destinataire = :id AND id_compte_demandeur = :id_friend)
+                                            OR (id_compte_demandeur = :id AND id_compte_destinataire = :id_friend)");
+              $query->bindValue(':id', $id, PDO::PARAM_INT);
+              $query->bindValue(':id_friend', $idFriend, PDO::PARAM_INT);
+              if (!$query->execute()) {
+                $query->closeCursor();
+                addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+              } else {
+                $query->closeCursor();
+                return true;
+              }
+            }
+          }
+          break;
+        case 'reject':
+        case 'cancel':
+        case 'remove':
+          $query = $this->bdd->prepare("SELECT 'ok' AS status
+                                        FROM demande
+                                        WHERE id_compte_destinataire = :id AND id_compte_demandeur = :id_friend
+                                        UNION
+                                        SELECT 'ok' AS status
+                                        FROM demande
+                                        WHERE id_compte_demandeur = :id AND id_compte_destinataire = :id_friend");
+          $query->bindValue(':id', $id, PDO::PARAM_INT);
+          $query->bindValue(':id_friend', $idFriend, PDO::PARAM_INT);
+          if (!$query->execute()) {
+            $query->closeCursor();
+            addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+          } else {
+            if ($query->rowCount() <= 0) {
+              $query->closeCursor();
+              addError("Vous n'avez aucun contact avec cette personne", $errArray);
+            } else {
+              $query = $this->bdd->prepare("DELETE FROM demande
+                                            WHERE (id_compte_destinataire = :id AND id_compte_demandeur = :id_friend)
+                                            OR (id_compte_demandeur = :id AND id_compte_destinataire = :id_friend)");
+              $query->bindValue(':id', $id, PDO::PARAM_INT);
+              $query->bindValue(':id_friend', $idFriend, PDO::PARAM_INT);
+              if (!$query->execute()) {
+                $query->closeCursor();
+                addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+              } else {
+                $query->closeCursor();
+                return true;
+              }
+            }
+          }
+          break;
       }
     } catch (Exception $e) {
       addError($e, $errArray, true);

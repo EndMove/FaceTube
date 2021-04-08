@@ -8,7 +8,8 @@
 session_start();
 
 const ROOT = __DIR__;
-include ROOT . '/php/config/mainConfig.php';
+include ROOT . '/php/config/config.php';
+date_default_timezone_set(CONFIG['websiteTimezone']);
 
 /*=========================================================================*
  *                                Libraries                                *

@@ -21,9 +21,9 @@ if (isset($_POST['submit'])) {
   $password = secure::string($_POST['password']);
 
   $member = new member\Member($bdd);
-  $id = $member->auth($login, $password, $infoErrors);
+  $id = $member->auth($infoErrors, $login, $password);
   if ($id) {
-    $member->import($id, $infoErrors);
+    $member->import($infoErrors, $id);
     $_SESSION['account'] = $member->getData();
     if (isset($_GET['redirect'])) {
       header('Location: ' . urldecode($_GET['redirect']));

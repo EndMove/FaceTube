@@ -1,5 +1,44 @@
 <?php
 include("php/includes/pages/friends.inc.php");
+
+// Variable d'information sur les erreurs, succès.
+$infoErrors = array();
+$infoSucc   = '';
+
+// Objet membre
+$member = new member\Member($bdd);
+
+// Demander ami
+if (isset($_POST['add_friend'])) {
+  $login_email = secure::string($_POST['add_friend']);
+  $id = $member->getID($infoErrors, $login_email);
+  if ($id) {
+    if ($member->updateFriend($infoErrors, $_SESSION['account']['id'], $id, 'add')) {
+      $infoSucc = 'Votre demande d\'ami a été envoyé avec succès.';
+    }
+  }
+}
+
+// Accepter ami
+if (isset($_POST['accept'])) {
+  $id = secure::string($_POST['user_id']);
+  if ($member->updateFriend($infoErrors, $_SESSION['account']['id'], $id, 'accept')) {
+    $infoSucc = 'Vous avez accepté un nouvel ami, Yéyy !';
+  }
+}
+
+// Refuser, supprimer, annuler ami
+if (isset($_POST['cancel']) || isset($_POST['reject']) || isset($_POST['remove'])) {
+  $id = secure::string($_POST['user_id']);
+  if ($member->updateFriend($infoErrors, $_SESSION['account']['id'], $id, 'remove')) {
+    $infoSucc = 'Vous venez de mettre fin à une relation Oo !';
+  }
+}
+
+// Récupération des données (liste d'amis, demandes, en attente...)
+$friendReceived = $member->getFriendRequestsReceived($infoErrors, $_SESSION['account']['id']);
+$friendSent = $member->getFriendRequestsSent($infoErrors, $_SESSION['account']['id']);
+$friendList = $member->getFriendList($infoErrors, $_SESSION['account']['id']);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -18,119 +57,103 @@ include("php/includes/pages/friends.inc.php");
 
   <main>
     <h1 class="text-center">Liste d'Amis</h1>
-
+    <?php showError($infoErrors); showSuccess($infoSucc); ?>
     <section class="friends">
       <h2>Demandes d'amis reçues</h2>
 
+      <?php
+      if (is_array($friendReceived)) {
+        foreach ($friendReceived as $item) {
+      ?>
       <article class="user-item">
         <img src="upload/user2.jpg" alt="Photo de profil">
         <div class="flex col content">
-          <span class="title">K/DA</span>
-          <span class="date">Le 13 novembre 2020</span>
+          <span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span>
+          <span class="date">Le D M Y</span>
         </div>
         <div class="flex align-right btn">
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
+          <form method="POST" action="">
+            <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="green" type="submit" name="accept" value="Accepter">
           </form>
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
-            <input class="red" type="submit" name="refuse" value="Refuser">
+          <form method="POST" action="">
+            <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
+            <input class="red" type="submit" name="reject" value="Refuser">
           </form>
         </div>
       </article>
-
-      <article class="user-item">
-        <img src="upload/user2.jpg" alt="Photo de profil">
-        <div class="flex col content">
-          <span class="title">K/DA</span>
-          <span class="date">Le 13 novembre 2020</span>
-        </div>
-        <div class="flex align-right btn">
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
-            <input class="green" type="submit" name="accept" value="Accepter">
-          </form>
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
-            <input class="red" type="submit" name="refuse" value="Refuser">
-          </form>
-        </div>
-      </article>
+      <?php
+        }
+      } else {
+        showInfo("Aucune demande d'amis en attente de confirmation pour le moment");
+      }
+      ?>
 
     </section>
 
     <section class="friends">
+
       <div class="flex add">
         <h2>Demandes d'amis en attentes</h2>
-        <form id="search-bar" class="align-right" method="POST">
+        <form id="search-bar" class="align-right" method="POST" action="">
           <input type="text" id="query" name="add_friend" placeholder="Ajouter un ami...">
           <button><i class="fas fa-plus"></i></button>
         </form>
       </div>
-      
-      <article class="user-item">
-        <img src="upload/user2.jpg" alt="Photo de profil">
-        <div class="flex col content">
-          <span class="title">K/DA</span>
-          <span class="date">Le 13 novembre 2020</span>
-        </div>
-        <div class="flex align-right btn">
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
-            <input class="red" type="submit" name="cancel" value="Annuler">
-          </form>
-        </div>
-      </article>
 
+      <?php
+      if (is_array($friendSent)) {
+        foreach ($friendSent as $item) {
+      ?>
       <article class="user-item">
         <img src="upload/user2.jpg" alt="Photo de profil">
         <div class="flex col content">
-          <span class="title">K/DA</span>
-          <span class="date">Le 13 novembre 2020</span>
+          <span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span>
+          <span class="date">Le D M Y</span>
         </div>
         <div class="flex align-right btn">
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
+          <form method="POST" action="">
+            <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="red" type="submit" name="cancel" value="Annuler">
           </form>
         </div>
       </article>
+      <?php
+        }
+      } else {
+        showInfo("Aucune demande d'amis en attente d'acceptation pour le moment");
+      }
+      ?>
 
     </section>
 
     <section class="friends">
       <h2>Amis</h2>
 
+      <?php
+      if (is_array($friendList)) {
+        foreach ($friendList as $item) {
+      ?>
       <article class="user-item">
         <img src="upload/user2.jpg" alt="Photo de profil">
         <div class="flex col content">
-          <a href="profile.php"><span class="title">K/DA</span></a>
-          <span class="date">Le 13 novembre 2020</span>
+          <a href="profile.php"><span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span></a>
+          <span class="date">Le D M Y</span>
         </div>
         <div class="flex align-right btn">
           <a class="btn-link blue" href="profile.php"><span><i class="fas fa-eye"></i></span></a>
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
+          <form method="POST" action="">
+            <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="red" type="submit" name="remove" value="Remove">
           </form>
         </div>
       </article>
-
-      <article class="user-item">
-        <img src="upload/user2.jpg" alt="Photo de profil">
-        <div class="flex col content">
-          <a href="profile.php"><span class="title">K/DA</span></a>
-          <span class="date">Le 13 novembre 2020</span>
-        </div>
-        <div class="flex align-right btn">
-          <a class="btn-link blue" href="profile.php"><span><i class="fas fa-eye"></i></span></a>
-          <form method="POST">
-            <input type="number" name="user_id" hidden>
-            <input class="red" type="submit" name="remove" value="Remove">
-          </form>
-        </div>
-      </article>
+          <?php
+        }
+      } else {
+        showInfo("Aucune ami pour le moment, :O But where are them ?!");
+      }
+      ?>
 
     </section>
   </main>

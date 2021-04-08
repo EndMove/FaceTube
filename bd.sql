@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS commentaire (
 CREATE TABLE IF NOT EXISTS demande (
   id_compte_demandeur INT NOT NULL,
   id_compte_destinataire INT NOT NULL,
-  estAcceptee BOOLEAN NOT NULL DEFAULT false,
+  est_acceptee BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_compte_demandeur, id_compte_destinataire),
   FOREIGN KEY (id_compte_demandeur) REFERENCES compte (id_compte) ON DELETE CASCADE,
   FOREIGN KEY (id_compte_destinataire) REFERENCES compte (id_compte) ON DELETE CASCADE

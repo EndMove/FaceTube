@@ -6,9 +6,11 @@
  */
 
 const CONFIG = array(
-  "websiteName"           => "FaceTube",          # Nom du site web
-  "websiteFolder"         => "/HELMo/FaceTube",   # Dossier dans lequel ce trouve le site
-  "email" => array(                               # Configuration des Emails
+  "websiteName"           => "FaceTube",          # Nom du site web.
+  "websiteFolder"         => "/HELMo/FaceTube",   # Dossier dans lequel ce trouve le site.
+  "websiteTimezone"       => "Europe/Paris",      # Time zone du site web pour les dates.
+  "websiteDateformat"     => "d/m/Y H:i",         # Format de la date par defaut
+  "email" => array(                               # Configuration des Emails.
     // Globale
     "charset"             => "UTF-8",
     "senderemail"         => "contact@endmove.eu",
@@ -21,7 +23,7 @@ const CONFIG = array(
     "smtpauthentication"  => true,
     "smtphost"            => "mail31.lwspanel.com",
     "smtpusername"        => "contact@endmove.eu",
-    "smtppassword"        => 'wZ7$jn4xPM',
+    "smtppassword"        => '',
     "smtpport"            => 587,
     "smtpdebug"           => false,
   )
