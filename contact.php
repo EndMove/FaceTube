@@ -1,8 +1,5 @@
 <?php
 include("php/includes/pages/contact.inc.php");
-if (isset($_POST['submit'])) {
-
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -21,15 +18,16 @@ if (isset($_POST['submit'])) {
 
   <main>
     <h1 class="text-center">Contacter un Administrateur</h1>
+    <?php showError($infoErrors); showSuccess($infoSucc); ?>
     <form id="form" class="contact" method="POST" action="">
       <div class="field">
-        <label for="email">Email</label><input type="email" id="email" name="email">
+        <label for="email">Email</label><input type="email" id="email" placeholder="Indiquez votre adresse email (requis pour la réponse de l'Admin)" name="email" value="<?php echo isset($email) ? $email : ''; ?>">
       </div>
       <div class="field">
-        <label for="subject">Sujet</label><input type="text" id="subject" name="subject">
+        <label for="subject">Sujet</label><input type="text" id="subject" placeholder="Indiquez le motif de la demande de contact" name="subject" value="<?php echo isset($subject) ? $subject : ''; ?>">
       </div>
       <div class="field">
-        <label for="content">Message</label><textarea id="content" rows="8"></textarea>
+        <label for="content">Message</label><textarea id="content" rows="8" placeholder="Rédigez votre message à l'intention de l'Admin ici" name="content"><?php echo isset($content) ? $content : ''; ?></textarea>
       </div>
       <div class="field btn">
         <input type="submit" name="submit" value="Envoyer">

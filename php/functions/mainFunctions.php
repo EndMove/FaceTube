@@ -5,6 +5,85 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
 /**
+ * Renvoie le domaine du site web avec ou sans le dossier d'installation
+ * ex: "http://endmove.eu" ou "http://endmove.eu/HELMo/FaceTube".
+ *
+ * @return      string Lien: "http://endmove.eu/HELMo/FaceTube".
+ * @param       boolean $configFolder True: avec le dossier<br>
+ *                                    False: sans le dossier.
+ *
+ * @author      Jérémi N 'EndMove'
+ */
+function getRootUrl($configFolder = false) {
+  $ssl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+  $ssl .= '://' . $_SERVER['HTTP_HOST'];
+  return $configFolder ? $ssl . CONFIG['websiteFolder'] : $ssl;
+}
+
+/**
+ * Craie un lien de redirection (pour quand l'utilisateur n'est pas connecté)
+ *
+ * @return      string Lien de redirection "http://endmove.eu?redirect=ma_page.php".
+ * @param       string $tag Tag HTML éventuel "#shopp", ...
+ *
+ * @see         getRootUrl()
+ * @author      Jérémi N 'EndMove'
+ */
+function getRedirectUrl($tag = null) {
+  $link = getRootUrl(true) . '/index.php?redirect=';
+  $link .= urlencode(getRootUrl() . $_SERVER['REQUEST_URI']);
+  if (!empty($tag)) $link .= $tag;
+  return $link;
+}
+
+/**
+ * Générer un token unique en ce basent sur le temps.
+ *
+ * @return      string Un token unique.
+ * @param       int $value Taille du token.
+ *
+ * @see         rand()
+ * @see         md5()
+ * @see         microtime()
+ * @author      Jérémi N 'EndMove'
+ */
+function getToken($value) {
+  $token = '';
+  $broker = md5(microtime(true) * 100000);
+  $characters = 'azertyuiopqsdfghjklmwxcvbn' . $broker . '0123456789' . $broker . 'AZERTYUIOPQSDFGHJKLMWXCVBN';
+  for ($i = 0; $i < $value; $i++) {
+    $token .= $characters[rand() % strlen($characters)];
+  }
+  return $token;
+}
+
+/**
+ * Génèrer un UUID unique d'après la norme UUID type 4.
+ *
+ * @return      string Un UUID unique.
+ *
+ * @see         mt_rand()
+ * @author      Jérémi N 'EndMove'
+ */
+function getUUID() {
+  return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+    // 32 bits pour "time_low".
+    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+    // 16 bits pour "time_mid".
+    mt_rand(0, 0xffff),
+    // 16 bits pour "time_hi_and_version",
+    // les quatre bits les plus significatifs contiennent le numéro de version (4).
+    mt_rand(0, 0x0fff) | 0x4000,
+    // 16 bits, 8 bits pour "clk_seq_hi_res",
+    // 8 bits pour "clk_seq_low",
+    // les deux bits les plus significatifs contiennent zéro et un pour la variante (DCE1.1).
+    mt_rand(0, 0x3fff) | 0x8000,
+    // 48 bits pour la "node".
+    mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+  );
+}
+
+/**
  * Permet d'ajouter des erreurs au tableau d'erreurs.
  *
  * @return      array Le tableau d'erreur
@@ -131,38 +210,6 @@ function isConnected() {
 }
 
 /**
- * Renvoie le domaine du site web avec ou sans le dossier d'installation
- * ex: "http://endmove.eu" ou "http://endmove.eu/HELMo/FaceTube".
- *
- * @return      string Lien: "http://endmove.eu/HELMo/FaceTube".
- * @param       boolean $configFolder True: avec le dossier<br>
- *                                    False: sans le dossier.
- *
- * @author      Jérémi N 'EndMove'
- */
-function getRootUrl($configFolder = false) {
-  $ssl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-  $ssl .= '://' . $_SERVER['HTTP_HOST'];
-  return $configFolder ? $ssl . CONFIG['websiteFolder'] : $ssl;
-}
-
-/**
- * Craie un lien de redirection (pour quand l'utilisateur n'est pas connecté)
- *
- * @return      string Lien de redirection "http://endmove.eu?redirect=ma_page.php".
- * @param       string $tag Tag HTML éventuel "#shopp", ...
- *
- * @see         getRootUrl()
- * @author      Jérémi N 'EndMove'
- */
-function getRedirectUrl($tag = null) {
-  $link = getRootUrl(true) . '/index.php?redirect=';
-  $link .= urlencode(getRootUrl() . $_SERVER['REQUEST_URI']);
-  if (!empty($tag)) $link .= $tag;
-  return $link;
-}
-
-/**
  * Permet d'envoyer un email en utilisant PHPMailer avec
  * ou sans utiliser un server SMTP voir la configuration du site web.
  *
@@ -228,4 +275,55 @@ function sendEmail(&$errArray, $body, $subject, $to, $attachment = NULL) {
 function retrieveDate($timespan = null, $format = null) {
   $format = empty($format) ? CONFIG['websiteDateformat'] : $format;
   return empty($timespan) ? date($format) : date($format, $timespan);
+}
+
+/**
+ * Obtenir l'extension d'un fichier depuis le nom de celui-ci.
+ *
+ * @return      string Le path du fichier (.png; .pdf; ...).
+ * @param       string $value Le chemin d'accès/nom du fichier.
+ *
+ * @author      Jérémi N 'EndMove'
+ */
+function getPath($value) {
+  return strtolower(pathinfo($value, PATHINFO_EXTENSION));
+}
+
+function uploadFile(&$errArray, $file) {
+  var_dump($file);
+  if (verify::fileError($file, $errArray)) {
+    if (verify::filePath($file, $errArray)) {
+      if (verify::fileSize($file, $errArray)) {
+        $fileName = getToken(45) . '.' . getPath($file['name']);
+        $fileRoot = ROOT . CONFIG['file']['uploadfolder'] . '/' . $fileName;
+        var_dump($fileName, $fileRoot);
+        if (!move_uploaded_file($file['tmp_name'], $fileRoot)) {
+          addError("Impossible de déplacer le fichier uploadé", $errArray);
+        } else {
+          if (!chmod($fileRoot, 0644)) {
+            unlink($fileRoot);
+            addError("Impossible de changer les permissions du fichier", $errArray);
+          } else {
+            return $fileName;
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function getFileUrl($value) {
+  return getRootUrl(true) . CONFIG['file']['uploadfolder'] . '/' .$value;
+}
+
+function removeFile(&$errArray, $value) {
+  $fileRoot = ROOT . CONFIG['file']['uploadfolder'] . '/' . $value;
+  if (file_exists($fileRoot)) {
+    unlink($fileRoot);
+    return true;
+  } else {
+    addError("Fichier innexistant", $errArray);
+  }
+  return false;
 }

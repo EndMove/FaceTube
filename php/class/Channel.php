@@ -1,6 +1,6 @@
 <?php
 /**
- * Video, contien la class de gestion des vidéos du site web
+ * Channel, Permet de gérer les chaines du membre.
  *
  * @package     video
  *
@@ -15,10 +15,10 @@
 namespace video;
 
 /**
- * Video
+ * Channel
  *
- * Cette class permet d'intéragire avec la base de données
- * pour gérer un video (édition, création, suppression).
+ * Cette class permet de gérer les chaines d'un membre
+ * en interagissant directement avec les base de données.
  *
  * @package     video
  *
@@ -26,7 +26,7 @@ namespace video;
  * @see         addError()
  * @author      Jérémi N 'EndMove'
  */
-class Video {
+class Channel {
   private $bdd;
   private $data;
 
@@ -38,11 +38,10 @@ class Video {
     $this->data = array(
       'id' => -1,
       'title' => 'no title',
-      'description' => 'no description',
-      'fragment' => NULL,
-      'duration' => NULL,
-      'miniature' => NULL,
-      'isblocked' => false
+      'ispublic',
+      'evaluation',
+      'datelastvideo',
+      'isblocked'
     );
   }
 
@@ -120,50 +119,5 @@ class Video {
       }
     }
     return $data;
-  }
-
-
-  /**
-   * Permet de créer un nouvelle vidéo en fonction
-   * des valeurs définie via {@see setData()} ou manuellement
-   * <code>$membre->title = 'Un titre'</code>
-   *
-   * @return      boolean True: création réussie <br>
-   *                      False: échec création.
-   * @param       array $errArray Tableau d'erreurs du projet.
-   *
-   * @since 1.0
-   *
-   * @author      Jérémi N 'EndMove'
-   */
-  public function create(&$errArray) {
-    if (!$this->check($errArray)) return false;
-    if ($this->used('email', $errArray)) {
-      addError("Un compte avec cette adresse email exist déjà", $errArray);
-      return false;
-    } else if ($this->used('login', $errArray)) {
-      addError("Un compte avec ce login exist déjà", $errArray);
-      return false;
-    }
-    try {
-      $query = $this->bdd->prepare("INSERT INTO compte (id_compte, nom, prenom, login, couriel, mot_de_passe, est_bloque)
-                                    VALUES (NULL, :nom, :prenom, :login, :couriel, :mot_de_passe, :est_bloque)");
-      $query->bindValue(':nom', $this->data['lastname'], PDO::PARAM_STR);
-      $query->bindValue(':prenom', $this->data['firstname'], PDO::PARAM_STR);
-      $query->bindValue(':login', $this->data['login'], PDO::PARAM_STR);
-      $query->bindValue(':couriel', $this->data['email'], PDO::PARAM_STR);
-      $query->bindValue(':mot_de_passe', $this->data['password'], PDO::PARAM_STR);
-      $query->bindValue(':est_bloque', $this->data['isblocked'], PDO::PARAM_BOOL);
-      if ($query->execute()) {
-        $query->closeCursor();
-        return true;
-      } else {
-        $query->closeCursor();
-        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
-      }
-    } catch (Exception $e) {
-      addError($e, $errArray, true);
-    }
-    return false;
   }
 }

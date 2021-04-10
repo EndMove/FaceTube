@@ -496,7 +496,7 @@ class Member {
   /**
    * Récupérer les demandes d'ami sous forme d'un tableau numéroté.
    *
-   * @return      array Tableau des demandes d'ami.
+   * @return      array|string Tableau des demandes d'ami ou none si aucune.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id ID du membre auquel récupérer les demandes.
    *
@@ -529,7 +529,7 @@ class Member {
   /**
    * Récupérer les demandes d'ami envoyées sous forme d'un tableau numéroté.
    *
-   * @return      array Tableau des demandes d'ami envoyées.
+   * @return      array|false Tableau des demandes d'ami envoyées.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id ID du membre auquel récupérer les demandes.
    *
@@ -562,7 +562,7 @@ class Member {
   /**
    * Récupérer la liste d'ami sous forme d'un tableau numéroté.
    *
-   * @return      array Tableau d'amis.
+   * @return      array|false Tableau d'amis.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id ID du membre auquel récupérer les amis.
    *

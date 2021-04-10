@@ -9,7 +9,7 @@ const CONFIG = array(
   "websiteName"           => "FaceTube",          # Nom du site web.
   "websiteFolder"         => "/HELMo/FaceTube",   # Dossier dans lequel ce trouve le site.
   "websiteTimezone"       => "Europe/Paris",      # Time zone du site web pour les dates.
-  "websiteDateformat"     => "d/m/Y H:i",         # Format de la date par defaut
+  "websiteDateformat"     => "d/m/Y H:i",         # Format de la date par defaut.
   "email" => array(                               # Configuration des Emails.
     // Globale
     "charset"             => "UTF-8",
@@ -26,5 +26,14 @@ const CONFIG = array(
     "smtppassword"        => '',
     "smtpport"            => 587,
     "smtpdebug"           => false,
+  ),
+  "file" => array(                                # Configuration des fichiers.
+    "uploadfolder" => "/upload",
+    "maximumsize" => 1500000,
+    "pathallowed" => array(
+      "jpg" => "image/jpg",
+      "jpeg" => "image/jpeg",
+      "png" => "image/png"
+    )
   )
 );

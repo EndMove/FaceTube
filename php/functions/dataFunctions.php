@@ -4,7 +4,7 @@
  * la sécurisation, vérification et obtention de données
  * sur l'utilisateur du site web.
  *
- * @version     1.0
+ * @version     1.1
  *
  * @author      Jérémi Nihart <contact@endmove.eu>
  * @copyright   © 2021 EndMove, Tous droits réservés.
@@ -201,6 +201,95 @@ class verify {
   public static function passwordMatch($password, $repeatPassword, &$errArray = null) {
     if ($password === $repeatPassword) return true;
     addError("Les mots de passe ne correspondents pas", $errArray);
+    return false;
+  }
+
+  /**
+   * Vérifie si il y a eu des erreurs durant l'upload du fichier.
+   *
+   * @return      boolean True: Aucune erreur à déplorer <br>
+   *                      False: Une erreur à déplorer.
+   * @param       int $file Variable d'un fichier uploadé.<br>
+   *                             <b>$_FILE['myFile']</b>
+   * @param       array $errArray Tableau d'erreurs du site web.
+   *
+   * @since 1.1
+   *
+   * @see         addError()
+   * @author      Jérémi N 'EndMove'
+   */
+  public static function fileError($file, &$errArray) {
+    if ($file['error'] != 0) {
+      switch ($file['error']) {
+        case UPLOAD_ERR_INI_SIZE:
+          addError("La taille maximal d'upload de PHP a été dépassé", $errArray);
+          break;
+        case UPLOAD_ERR_PARTIAL:
+          addError("L'upload du fichier est incomplet", $errArray);
+          break;
+        case UPLOAD_ERR_NO_FILE:
+          addError("Aucun fichier n'a été spécifié", $errArray);
+          break;
+        case UPLOAD_ERR_NO_TMP_DIR:
+          addError("Le fichier d'upload de PHP n'a pas été trouvé", $errArray);
+          break;
+        case UPLOAD_ERR_CANT_WRITE:
+          addError("PHP n'arrive pas à écrire le fichier sur le disque", $errArray);
+          break;
+        case UPLOAD_ERR_FORM_SIZE:
+          addError("Le taille maximal spécifié dans le formulaire a été dépassé", $errArray);
+          break;
+        default:
+          addError("Erreur de fichier", $errArray);
+      }
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Vérifie si l'extension et le type de fichier sont acceptés.
+   *
+   * @return      boolean True: Path autorisé <br>
+   *                      False: Path non autorisé.
+   * @param       int $file Variable d'un fichier uploadé.<br>
+   *                             <b>$_FILE['myFile']</b>
+   * @param       array $errArray Tableau d'erreurs du site web.
+   *
+   * @since 1.1
+   *
+   * @see         addError()
+   * @author      Jérémi N 'EndMove'
+   */
+  public static function filePath($file, &$errArray) {
+    $path = getPath($file['name']);
+    if (key_exists($path, CONFIG['file']['pathallowed'])) {
+      if (in_array($file['type'], CONFIG['file']['pathallowed'])){
+        return true;
+      } else addError("Type de fichier non autorisé", $errArray);
+    } else addError("Extension de fichier non autorisé", $errArray);
+    return false;
+  }
+
+  /**
+   * Vérifie si le fichier n'est pas trop valumineux.
+   *
+   * @return      boolean True: Le fichier à une taille valide <br>
+   *                      False: Le fichier à une taille invalide.
+   * @param       int $file Variable d'un fichier uploadé.<br>
+   *                             <b>$_FILE['myFile']</b>
+   * @param       array $errArray Tableau d'erreurs du site web.
+   *
+   * @since 1.1
+   *
+   * @see         addError()
+   * @author      Jérémi N 'EndMove'
+   */
+  public static function fileSize($file, &$errArray) {
+    if ($file['size'] <= CONFIG['file']['maximumsize']) {
+      return true;
+    }
+    addError("Le fichier est trop volumineux", $errArray);
     return false;
   }
 }
