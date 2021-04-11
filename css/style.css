@@ -571,6 +571,18 @@ div.myaccount a.btn-link {
 /*____ #END# Video Edit/Add ____*/
 
 
+/*____ #START(page)# Profile ____*/
+
+/*____ #END# Video Profile ____*/
+
+/*--- Action Button ----*/
+.action-button {
+  align-items: center;
+}
+.action-button a:not(:last-child) {
+  margin-right: 0.6em;
+  margin-left: 0.7em;
+}
 /*--- Input/Button/Select/... ---*/
 input, textarea, button, a.btn-link, select {
   border: 2px solid #313131;

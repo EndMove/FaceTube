@@ -55,6 +55,31 @@ class secure {
   public static function stringComp($txt) {
     return empty(trim($txt)) ? '' : htmlentities(trim($txt), ENT_COMPAT, 'utf-8');
   }
+
+  /**
+   * Protéger une valeur entière ou décimale en
+   * transforment les caractères spéciaux.
+   *
+   * @return      int Un integer désamorcé en <u>-1</u>
+   *                  si le paramètre n'étais ni un float ni un int.
+   * @param       int|string $int Valeur flottant ou entièrer.
+   *
+   * @since 1.0
+   *
+   * @see         secure::string()
+   * @author      Jérémi N 'EndMove'
+   */
+  static function int($int) {
+    $int = secure::string($int);
+    if (is_numeric($int)) {
+      if (preg_match("/^[0-9]+[.0-9]+$/", $int)) {
+        return floatval($int);
+      } else {
+        return intval($int);
+      }
+    }
+    return -1;
+  }
 }
 
 /**

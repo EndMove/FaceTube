@@ -6,7 +6,7 @@ include("php/includes/pages/channel.inc.php");
 <head>
   <!-- Header -->
   <?php include("php/includes/head.inc.php"); ?>
-  <title><?php echo CONFIG['websiteName'] ?> | Chaine :</title>
+  <title><?php echo CONFIG['websiteName'] ?> | Chaine</title>
   <!-- End Header -->
 </head>
 <body>
@@ -21,14 +21,16 @@ include("php/includes/pages/channel.inc.php");
       <div class="breadcrumb">
         <ul>
           <li><a href="home.php">Accueil</a></li>
-          <li><a href="profile.php">Chaînes de K/DA</a></li>
-          <li>{channel_name}</li>
+          <li><a href="<?php echo 'profile.php?id=' . $member->id; ?>">Chaînes de <b><?php echo($member->firstname.' '.$member->lastname); ?></b></a></li>
+          <li><b><?php echo $channel->name; ?></b></li>
         </ul>
       </div>
       <div class="align-right">
-      	<h1>Chaîne de {user_name}</h1>
+      	<h1>Chaîne de <b><?php echo $member->login; ?></b></h1>
       </div>
     </div>
+
+    <?php showError($infoErrors); showSuccess($infoSucc); ?>
 
     <section>
       <h2>Vidéos de la chaîne</h2>

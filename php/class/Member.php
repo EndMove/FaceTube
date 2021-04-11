@@ -727,4 +727,41 @@ class Member {
     }
     return false;
   }
+
+  /**
+   * Vérifier si deux comptes ce sont en amis ou pas.
+   *
+   * @return      boolean True: sont amis <br>
+   *                      False: ne sont pas amis.
+   * @param       array $errArray Tableau d'erreurs.
+   * @param       int $idFriend ID du compte de "l'ami".
+   * @param       int $id ID du compte courant.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function isFriend(&$errArray, $idFriend, $id = null) {
+    $id = empty($id) ? $this->data['id'] : $id;
+    try {
+      $query = $this->bdd->prepare("SELECT est_acceptee
+                                    FROM demande
+                                    WHERE ((id_compte_destinataire = :id AND id_compte_demandeur = :id_friend)
+                                    OR (id_compte_demandeur = :id AND id_compte_destinataire = :id_friend))
+                                    AND est_acceptee = true");
+      $query->bindValue(':id', $id, PDO::PARAM_INT);
+      $query->bindValue('id_friend', $idFriend, PDO::PARAM_INT);
+      if ($query->execute()) {
+        if ($query->rowCount() > 0) {
+          return true;
+        }
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
 }

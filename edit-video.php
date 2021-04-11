@@ -1,5 +1,63 @@
 <?php
 include("php/includes/pages/edit-video.inc.php");
+
+// Variable d'information sur les erreurs, succès.
+$infoErrors = array();
+$infoSucc   = '';
+
+// Objet Chaine
+$channel = new video\Channel($bdd);
+
+// Variable par défaut
+$public = false;
+$name = NULL;
+
+// Récupérer toute les chaines
+$channels = $channel->exportAll($infoErrors, $_SESSION['account']['id']);
+
+// Option GET - Charger vidéo; Supprimer vidéo.
+if (isset($_GET['id'])) {
+  $id = secure::int($_GET['id']);
+
+  // Options
+  if (isset($_GET['option'])) {
+    $option = secure::string($_GET['option']);
+    switch ($option) {
+      case 'remove':
+        // une action
+        break;
+      default:
+        addError("Option inconnue merci de vérifier votre requète HTTP", $infoErrors);
+        break;
+    }
+  }
+}
+
+// Option POST (mettre à jour chaine || créer chaine).
+if (isset($_POST['submit'])) {
+  $name = secure::string($_POST['name']);
+  $public = secure::string($_POST['public']) == 'public';
+
+  $data = array(
+    'fk_owner' => $_SESSION['account']['id'],
+    'name' => $name,
+    'ispublic' => $public
+  );
+
+  $channel->setData($data);
+
+  if (isset($id)) {
+    // Mise à jour
+    if ($channel->update($infoErrors)) {
+      $infoSucc = 'Mise à jour de la chaine réussie';
+    }
+  } else {
+    // Créer
+    if ($channel->create($infoErrors)) {
+      $infoSucc = 'Création de la chaine réussie';
+    }
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -18,7 +76,7 @@ include("php/includes/pages/edit-video.inc.php");
 
   <main>
     <h1 class="text-center">Ajouter ou modifier une vidéo</h1>
-    <form id="form" method="POST" action="">
+    <form id="form" method="POST" action="" enctype="multipart/form-data">
       <div class="field">
         <label for="channel">Chaîne de publication</label>
         <select id="channel" name="channel">
@@ -36,7 +94,10 @@ include("php/includes/pages/edit-video.inc.php");
         <label for="html_fragment">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="https://####.##" value="https://www.youtube.com/embed/3VTkBuxU4yk">
       </div>
       <div class="field">
-        <label for="banner">Mignature</label><input type="text" id="banner" name="banner" placeholder="https://####.##/####.##" value="upload/mignature02.webp">
+        <label for="time">HTML5 Fragment</label><input type="time" id="time" name="time" placeholder="00:15:00" value="00:00">
+      </div>
+      <div class="field">
+        <label for="banner">Mignature</label><input type="file" id="banner" name="banner" placeholder="https://####.##/####.##" value="upload/mignature02.webp">
       </div>
       <div class="split">
         <div class="field"></div>

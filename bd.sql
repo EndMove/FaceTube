@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS chaine (
   nom VARCHAR(155) NOT NULL DEFAULT 'no name',
   est_publique BOOLEAN NOT NULL DEFAULT true,
   evaluation INT NOT NULL,
-  date_derniere_video DATETIME NOT NULL,
+  date_derniere_video DATETIME,
   est_bloquee BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_chaine),
   FOREIGN KEY (fk_compte) REFERENCES compte (id_compte) ON DELETE CASCADE
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS video (
   duree TIME NOT NULL DEFAULT '00:00:00',
   url_apercu varchar(255),
   date_ajout DATETIME NOT NULL,
-  est_bloque BOOLEAN NOT NULL DEFAULT false,
+  est_bloquee BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_video),
   FOREIGN KEY (fk_chaine) REFERENCES chaine (id_chaine) ON DELETE CASCADE
 );

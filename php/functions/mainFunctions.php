@@ -289,6 +289,17 @@ function getPath($value) {
   return strtolower(pathinfo($value, PATHINFO_EXTENSION));
 }
 
+/**
+ * Uploader un fichier sur le serveur et vérifier que tout est conforme.
+ *
+ * @return      string|boolean Le nom du fichier ou false en cas d'échec
+ * @param       array $errArray Tableau d'erreur du siteweb.
+ * @param       array $file Tableau d'upload contenant les information d'un fichier.
+ *
+ * @see         verify
+ * @see         move_uploaded_file()
+ * @author      Jérémi N 'EndMove'
+ */
 function uploadFile(&$errArray, $file) {
   var_dump($file);
   if (verify::fileError($file, $errArray)) {
@@ -296,7 +307,6 @@ function uploadFile(&$errArray, $file) {
       if (verify::fileSize($file, $errArray)) {
         $fileName = getToken(45) . '.' . getPath($file['name']);
         $fileRoot = ROOT . CONFIG['file']['uploadfolder'] . '/' . $fileName;
-        var_dump($fileName, $fileRoot);
         if (!move_uploaded_file($file['tmp_name'], $fileRoot)) {
           addError("Impossible de déplacer le fichier uploadé", $errArray);
         } else {
@@ -313,10 +323,29 @@ function uploadFile(&$errArray, $file) {
   return false;
 }
 
+/**
+ * Récupérer l'url HTTP complet d'un fichier uploadé.
+ *
+ * @return      string URL HTTP complet.
+ * @param       string $value Nom complet avec extension du fichier à récupérer.
+ *
+ * @see         getRootUrl()
+ * @author      Jérémi N 'EndMove'
+ */
 function getFileUrl($value) {
   return getRootUrl(true) . CONFIG['file']['uploadfolder'] . '/' .$value;
 }
 
+/**
+ * Supprimer un fichier précédement uploadé.
+ *
+ * @return      boolean True: succès <br>
+ *                      False: Erreur.
+ * @param       array $errArray Tableau d'erreur du siteweb.
+ * @param       string $value Nom complet avec extension du fichier à supprimer.
+ *
+ * @author      Jérémi N 'EndMove'
+ */
 function removeFile(&$errArray, $value) {
   $fileRoot = ROOT . CONFIG['file']['uploadfolder'] . '/' . $value;
   if (file_exists($fileRoot)) {
