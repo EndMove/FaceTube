@@ -47,8 +47,10 @@ include("php/includes/pages/myaccount.inc.php");
     </form>
 
     <div class="myaccount">
-      <a class="btn-link blue" href="profile.php"><span>Votre Profil</span></a>
-      <a class="btn-link blue" href="friends.php"><span>Vos Amis</span></a>
+      <a class="btn-link blue" href="profile.php"><span><i class="fas fa-id-badge"></i> Votre Profil</span></a>
+      <a class="btn-link blue" href="friends.php"><span><i class="fas fa-user-friends"></i> Vos Amis</span></a>
+      <a class="btn-link blue" href="edit-channel.php"><span><i class="fas fa-expand-arrows-alt"></i> Ajouter une chaine</span></a>
+      <a class="btn-link blue" href="edit-video.php"><span><i class="fas fa-video"></i> Ajouter une vidéo</span></a>
     </div>
 
   </main>

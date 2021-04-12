@@ -24,19 +24,19 @@ include("php/includes/pages/video.inc.php");
 
     <section id="video">
       <section class="content">
-        <iframe src="https://www.youtube.com/embed/3VTkBuxU4yk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <?php echo htmlspecialchars_decode($video->fragment); ?>
       </section>
 
       <section class="meta">
-        <h2>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h2>
+        <h2><?php echo $video->title; ?></h2>
         <div class="flex wrap">
           <div class="stats">
-            <span><i class="far fa-eye"></i> 485k</span>
-            <span><i class="far fa-clock"></i> 20:15</span>
-            <span><i class="far fa-comments"></i> 541k</span>
+            <span><i class="far fa-eye"></i> <?php echo $video->views ?></span>
+            <span><i class="far fa-clock"></i> <?php echo $video->duration; ?></span>
+            <span><i class="far fa-comments"></i> 000k</span>
           </div>
           <div class="flex options">
-            <span class="noflex"><i class="far fa-star"></i> 47%</span>
+            <span class="noflex"><i class="far fa-star"></i> <?php echo $video->evaluation.'%'; ?></span>
             <form method="POST">
               <input type="text" name="like" hidden>
               <button class="active"><i class="far fa-thumbs-up"></i></button>
@@ -45,11 +45,11 @@ include("php/includes/pages/video.inc.php");
               <input type="text" name="dislike" hidden>
               <button><i class="far fa-thumbs-down"></i></button>
             </form>
-            <a href="edit-video.php" target="_blank"><i class="fas fa-cog"></i></a>
-            <a href="moderate-video.php" target="_blank"><i class="fas fa-user-cog"></i></a>
+            <a href="<?php echo 'edit-video.php?id='.$video->id; ?>" target="_blank"><i class="fas fa-cog"></i></a>
+            <a href="<?php echo 'moderate-video.php?id='.$video->id; ?>" target="_blank"><i class="fas fa-user-cog"></i></a>
           </div>
           <div class="info">
-            <p>Montez sur le trône. K/DA est de retour avec « MORE », qui regroupe Madison Beer, SOYEON et MIYEON de (G)I-DLE, Lexie Liu, Jaira Burns et Séraphine. K/DA est un super-groupe musical composé d'Ahri, Evelynn, Akali et Kai'Sa. Ne manquez pas leur prochain EP, ALL OUT, qui paraîtra le 6 novembre 2020. Suivez l'actualité de @KDA_MUSIC sur Twitter et Instagram.</p>
+            <p>ndifffneinfj jefjebreb</p>
           </div>
         </div>
       </section>

@@ -98,11 +98,11 @@ include("php/includes/pages/friends.inc.php");
       <article class="user-item">
         <img src="upload/user2.jpg" alt="Photo de profil">
         <div class="flex col content">
-          <a href="profile.php"><span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span></a>
+          <a href="<?php echo 'profile.php?id='.$item['id']; ?>"><span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span></a>
           <span class="date">Le D M Y</span>
         </div>
         <div class="flex align-right btn">
-          <a class="btn-link blue" href="profile.php"><span><i class="fas fa-eye"></i></span></a>
+          <a class="btn-link blue" href="<?php echo 'profile.php?id='.$item['id']; ?>"><span><i class="fas fa-eye"></i></span></a>
           <form method="POST" action="">
             <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="red" type="submit" name="remove" value="Remove">

@@ -13,6 +13,7 @@ $infoSucc   = '';
 
 // Objet Chaine
 $channel = new video\Channel($bdd);
+$video = new video\Video($bdd);
 
 // Variable par défaut
 $public = false;
@@ -22,7 +23,7 @@ $name = NULL;
 if (isset($_GET['id'])) {
   $id = secure::int($_GET['id']);
   // Récupérer chaine et vérifier qu'on est propriétaire
-  $channel->import($infoErrors, $id);
+  $channel->import($infoErrors, $id, 1);
   if ($channel->fk_owner != $_SESSION['account']['id']) {
     header('Location: ' . getRootUrl(true) . '/profile.php');
     die();
@@ -32,6 +33,12 @@ if (isset($_GET['id'])) {
     $option = secure::string($_GET['option']);
     switch ($option) {
       case 'remove':
+        $videos = $video->exportAll($infoErrors, $id);
+        if ($videos !== false) {
+          foreach ($videos as $vi) {
+            $vi->remove($infoErrors);
+          }
+        }
         $channel->remove($infoErrors);
         header('Location: ' . getRootUrl(true) . '/profile.php');
         die();

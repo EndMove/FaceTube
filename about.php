@@ -20,6 +20,7 @@ include("php/includes/pages/about.inc.php");
     <h1 class="text-center">À Propos</h1>
     <p>Hey, cette page est ici pour aider le développeur (moi) à naviger facilement dans le site FaceTube<br>
     Elle comprend la totalité des pages du site web. Dans un futur proche la page "À propos" sera une vrais page "À propos"... un jour peut-être.</p>
+    <p><b>Encore beaucoup de chose à faire checkez le profile et les pages de ce coté</b> merci pour vos conseils (msg pour le prof)</p>
     <ul>
       <li><a href="home.php">Accueil</a></li>
       <li><a href="search.php">Rechercher</a></li>

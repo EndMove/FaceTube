@@ -4,7 +4,7 @@
  * la sécurisation, vérification et obtention de données
  * sur l'utilisateur du site web.
  *
- * @version     1.1
+ * @version     1.2
  *
  * @author      Jérémi Nihart <contact@endmove.eu>
  * @copyright   © 2021 EndMove, Tous droits réservés.
@@ -79,6 +79,22 @@ class secure {
       }
     }
     return -1;
+  }
+
+  /**
+   * Protéger une valeur à insérer net dans une
+   * requète SQL.
+   *
+   * @return      string La valeur désamorcé.
+   * @param       int|string $value Valeur à désamorcer.
+   *
+   * @since 1.2
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  static function sql($value) {
+    $value = stripslashes($value);
+    return htmlentities($value, ENT_QUOTES, 'utf-8');
   }
 }
 

@@ -33,7 +33,7 @@ class Channel {
   private $bdd;
   private $data;
 
-  const CANT_SET = array('bdd', 'id', 'fk_owner');
+  const CANT_SET = array('bdd', 'id');
   const CANT_GET = array('bdd');
 
   public function __construct($bdd) {
@@ -62,7 +62,7 @@ class Channel {
   public function __get($name) {
     if (!in_array($name, self::CANT_GET)) {
       if (array_key_exists($name, $this->data)) {
-        return empty($this->data[$name]) ? 'No value defined yet' : $this->data[$name];
+        return $this->data[$name];
       }
     }
     return 'Get request has been rejected';
@@ -275,23 +275,43 @@ class Channel {
    *                      False: Échec importation.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id L'id de la chaine.
+   * @param       int $priority Ordre de priorité de visionage. <br>
+   *                            0: chargement normal ; <br>
+   *                            1: normal + chaines privées ; <br>
+   *                            2: normal + privées + chaines bloquées.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function import(&$errArray, $id) {
+  public function import(&$errArray, $id, $priority = 0) {
     $id = empty($id) ? $this->data['id'] : $id;
     if ($id < 0) {
       addError("L'ID de la chaine à importer est inconnu", $errArray);
       return false;
     }
     try {
-      $query = $this->bdd->prepare("SELECT * FROM chaine WHERE id_chaine = :id");
+      switch ($priority) {
+        case 1:
+          $query = $this->bdd->prepare("SELECT *
+                                        FROM chaine
+                                        WHERE id_chaine = :id AND est_bloquee = false");
+          break;
+        case 2:
+          $query = $this->bdd->prepare("SELECT *
+                                        FROM chaine
+                                        WHERE id_chaine = :id");
+          break;
+        default:
+          $query = $this->bdd->prepare("SELECT *
+                                        FROM chaine
+                                        WHERE id_chaine = :id AND est_publique = true AND est_bloquee = false");
+          break;
+      }
       $query->bindValue(':id', $id, PDO::PARAM_INT);
       if ($query->execute()) {
         if ($query->rowCount() <= 0) {
-          addError("Il n'existe aucune chaine aillant l'id: $id", $errArray);
+          addError("Il n'existe aucune chaine d'ID: $id", $errArray);
           return false;
         }
         $data = $query->fetch(PDO::FETCH_ASSOC);
@@ -322,22 +342,42 @@ class Channel {
    *                            False: Échec exportation.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id L'id du member propriétaire de la chaine.
+   * @param       int $priority Niveau de priorité: <br>
+   *                            0: chargement normal ; <br>
+   *                            1: normal + chaines privées ; <br>
+   *                            2: normal + privées + chaines bloquées.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function exportAll(&$errArray, $id) {
+  public function exportAll(&$errArray, $id, $priority = 0) {
     if (empty($id) || $id <= -1) {
       addError("ID du compte membre invalide", $errArray);
       return false;
     }
     try {
-      $query = $this->bdd->prepare("SELECT id_chaine FROM chaine WHERE fk_compte = :id");
+      switch ($priority) {
+        case 1:
+          $query = $this->bdd->prepare("SELECT id_chaine
+                                        FROM chaine
+                                        WHERE fk_compte = :id AND est_bloquee = false");
+          break;
+        case 2:
+          $query = $this->bdd->prepare("SELECT id_chaine
+                                        FROM chaine
+                                        WHERE fk_compte = :id");
+          break;
+        default:
+          $query = $this->bdd->prepare("SELECT id_chaine
+                                        FROM chaine
+                                        WHERE fk_compte = :id AND est_publique = true AND est_bloquee = false");
+          break;
+      }
       $query->bindValue(':id', $id, PDO::PARAM_INT);
       if ($query->execute()) {
         if ($query->rowCount() <= 0) {
-          addError("Il n'existe aucune chaine aillant l'id: $id", $errArray);
+          addError("L'utilisateur d'ID: $id ne possède aucune chaine", $errArray);
           return false;
         }
         $data = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -345,7 +385,7 @@ class Channel {
         $channels = array();
         foreach ($data as $value) {
           $channel = new Channel($this->bdd);
-          $channel->import($errArray, $value['id_chaine']);
+          $channel->import($errArray, $value['id_chaine'], $priority);
           $channels[] = $channel;
         }
         return $channels;
@@ -358,4 +398,6 @@ class Channel {
     }
     return false;
   }
+
+  //public function isAllowedToWatch(&$errArray)
 }

@@ -30,180 +30,40 @@ include("php/includes/pages/channel.inc.php");
       </div>
     </div>
 
-    <?php showError($infoErrors); showSuccess($infoSucc); ?>
-
     <section>
       <h2>Vidéos de la chaîne</h2>
 
+      <?php showError($infoErrors); showSuccess($infoSucc); ?>
+
       <div class="flex wrap">
-
+    <?php
+    if ($videos !== false) {
+      foreach ($videos as $vi) {
+        ?>
         <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
+          <a class="to-video" href="<?php echo 'video.php?id=' . $vi->id; ?>">
+            <img class="mignature" src="<?php echo(getFileUrl($vi->miniature)); ?>" alt="mignature">
           </a>
           <div class="flex row">
             <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
             <div class="flex col">
               <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
+                <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3><?php echo $vi->title;?></h3></a>
               </div>
               <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
+                <a class="link" href="<?php echo('channel.php?id=' . $channel->id); ?>"><?php echo $channel->name; ?></a>
                 <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
+                  <span><i class="far fa-eye"></i> <?php echo($vi->views); ?></span>
+                  <span><i class="far fa-clock"></i> <?php echo($vi->duration); ?></span>
                 </div>
               </div>
             </div>
           </div>
         </article>
-
-        <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-          </a>
-          <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-            <div class="flex col">
-              <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-              </div>
-              <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
-                <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-        
-        <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-          </a>
-          <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-            <div class="flex col">
-              <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-              </div>
-              <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
-                <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-        
-        <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-          </a>
-          <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-            <div class="flex col">
-              <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-              </div>
-              <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
-                <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-        
-        <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-          </a>
-          <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-            <div class="flex col">
-              <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-              </div>
-              <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
-                <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-          </a>
-          <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-            <div class="flex col">
-              <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-              </div>
-              <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
-                <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-          </a>
-          <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-            <div class="flex col">
-              <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-              </div>
-              <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
-                <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="video-item">
-          <a class="to-video" href="video.php">
-            <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-          </a>
-          <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-            <div class="flex col">
-              <div class="title">
-                <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-              </div>
-              <div class="sub-title">
-                <a class="link" href="channel.php">K/DA</a>
-                <div class="meta">
-                  <span><i class="far fa-eye"></i> 485k</span>
-                  <span><i class="far fa-clock"></i> 20:15</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+        <?php
+      }
+    }
+    ?>
         
       </div>
 

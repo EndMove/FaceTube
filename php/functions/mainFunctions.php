@@ -301,7 +301,6 @@ function getPath($value) {
  * @author      Jérémi N 'EndMove'
  */
 function uploadFile(&$errArray, $file) {
-  var_dump($file);
   if (verify::fileError($file, $errArray)) {
     if (verify::filePath($file, $errArray)) {
       if (verify::fileSize($file, $errArray)) {

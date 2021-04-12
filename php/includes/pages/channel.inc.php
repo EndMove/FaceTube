@@ -7,28 +7,30 @@ if (!isConnected()) {
   die();
 }
 
-
 // Variable d'information sur les erreurs, succès.
 $infoErrors = array();
 $infoSucc   = '';
 
-// Show Profile of ?
+// Show channel id ?
 if (!isset($_GET['id'])) {
   header('Location: ' . getRootUrl(true) . '/home.php');
   die();
 } else $id = secure::int($_GET['id']);
 
-// Objet Chaine
+// Objets
 $channel = new video\Channel($bdd);
+$video = new video\Video($bdd);
 $member = new member\Member($bdd);
 
-// Get data
-$channel->import($infoErrors, $id);
+// Récupération données
+$channel->import($infoErrors, $id, 1);
 $member->import($infoErrors, $channel->fk_owner);
+$videos = $video->exportAll($infoErrors, $id, 0);
 
-// sont amis ?
-if ($channel->fk_owner != $_SESSION['account']['id']) {
-  if (!$member->isFriend($infoErrors, $_SESSION['account']['id'])) {
+// Sont amis ?
+$mine = $channel->fk_owner == $_SESSION['account']['id'];
+if (!$mine) {
+  if (!$channel->ispublic || !$member->isFriend($infoErrors, $channel->fk_owner, $_SESSION['account']['id'])) {
     header('Location: ' . getRootUrl(true) . '/home.php');
     die();
   }

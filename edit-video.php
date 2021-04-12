@@ -1,63 +1,5 @@
 <?php
 include("php/includes/pages/edit-video.inc.php");
-
-// Variable d'information sur les erreurs, succès.
-$infoErrors = array();
-$infoSucc   = '';
-
-// Objet Chaine
-$channel = new video\Channel($bdd);
-
-// Variable par défaut
-$public = false;
-$name = NULL;
-
-// Récupérer toute les chaines
-$channels = $channel->exportAll($infoErrors, $_SESSION['account']['id']);
-
-// Option GET - Charger vidéo; Supprimer vidéo.
-if (isset($_GET['id'])) {
-  $id = secure::int($_GET['id']);
-
-  // Options
-  if (isset($_GET['option'])) {
-    $option = secure::string($_GET['option']);
-    switch ($option) {
-      case 'remove':
-        // une action
-        break;
-      default:
-        addError("Option inconnue merci de vérifier votre requète HTTP", $infoErrors);
-        break;
-    }
-  }
-}
-
-// Option POST (mettre à jour chaine || créer chaine).
-if (isset($_POST['submit'])) {
-  $name = secure::string($_POST['name']);
-  $public = secure::string($_POST['public']) == 'public';
-
-  $data = array(
-    'fk_owner' => $_SESSION['account']['id'],
-    'name' => $name,
-    'ispublic' => $public
-  );
-
-  $channel->setData($data);
-
-  if (isset($id)) {
-    // Mise à jour
-    if ($channel->update($infoErrors)) {
-      $infoSucc = 'Mise à jour de la chaine réussie';
-    }
-  } else {
-    // Créer
-    if ($channel->create($infoErrors)) {
-      $infoSucc = 'Création de la chaine réussie';
-    }
-  }
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -76,28 +18,30 @@ if (isset($_POST['submit'])) {
 
   <main>
     <h1 class="text-center">Ajouter ou modifier une vidéo</h1>
+    <?php showError($infoErrors); showSuccess($infoSucc); ?>
     <form id="form" method="POST" action="" enctype="multipart/form-data">
       <div class="field">
         <label for="channel">Chaîne de publication</label>
         <select id="channel" name="channel">
-          <option value="#">K/DA</option>
-          <option value="#">EndMoveMovie</option>
+        <?php foreach ($channels as $ch) { ?>
+          <option value="<?php echo $ch->id; ?>" <?php echo (isset($fk_channel) && $fk_channel == $ch->id) ? 'selected' : ''; ?>><?php echo $ch->name; ?></option>
+        <?php } ?>
         </select>
       </div>
       <div class="field">
-        <label for="title">Titre</label><input type="text" id="title" name="title" placeholder="Titre de la vidéo" value="MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)">
+        <label for="title">Titre</label><input type="text" id="title" name="title" placeholder="Titre de la vidéo" value="<?php echo isset($title) ? $title : ''; ?>">
       </div>
       <div class="field">
-        <label for="description">Description</label><textarea id="description" name="description" value="Contenu" rows="5">Montez sur le trône. K/DA est de retour avec « MORE », qui regroupe Madison Beer, SOYEON et MIYEON de (G)I-DLE, Lexie Liu, Jaira Burns et Séraphine. K/DA est un super-groupe musical composé d'Ahri, Evelynn, Akali et Kai'Sa. Ne manquez pas leur prochain EP, ALL OUT, qui paraîtra le 6 novembre 2020. Suivez l'actualité de @KDA_MUSIC sur Twitter et Instagram.</textarea>
+        <label for="description">Description</label><textarea id="description" name="description" rows="5"><?php echo isset($description) ? $description : ''; ?></textarea>
       </div>
       <div class="field">
-        <label for="html_fragment">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="https://####.##" value="https://www.youtube.com/embed/3VTkBuxU4yk">
+        <label for="html_fragment">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="https://####.##" value='<?php echo isset($fragment) ? htmlspecialchars_decode($fragment) : ''; ?>'>
       </div>
       <div class="field">
-        <label for="time">HTML5 Fragment</label><input type="time" id="time" name="time" placeholder="00:15:00" value="00:00">
+        <label for="time">HTML5 Fragment</label><input type="time" id="time" step="1" name="time" placeholder="00:15:00" value="<?php echo isset($duration) ? $duration : ''; ?>">
       </div>
       <div class="field">
-        <label for="banner">Mignature</label><input type="file" id="banner" name="banner" placeholder="https://####.##/####.##" value="upload/mignature02.webp">
+        <label for="banner">Mignature</label><input type="file" id="banner" name="banner">
       </div>
       <div class="split">
         <div class="field"></div>
