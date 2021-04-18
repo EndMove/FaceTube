@@ -72,7 +72,7 @@ if (isset($_POST['submit'])) {
   } else {
     // Créer
     if ($channel->create($infoErrors)) {
-      $infoSucc = 'Création de la chaine réussie';
+      $infoSucc = 'Création de la chaine réussie. <a href="profile.php">Retour à mes chaines</a>';
     }
   }
 }

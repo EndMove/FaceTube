@@ -613,10 +613,22 @@ class Video {
                                     ORDER BY evaluation ASC");
       $query->bindValue(':id_video', $id, PDO::PARAM_INT);
       if ($query->execute()) {
-        if ($query->rowCount() > 0) {
+        $count = $query->rowCount();
+        if ($count > 0) {
           $data = $query->fetchAll(PDO::FETCH_ASSOC);
-          $like = $data[0]['nombre'];
-          $unlike = $data[1]['nombre'];
+          $query->closeCursor();
+          if ($count == 2) {
+            $like = intval($data[0]['nombre']);
+            $unlike = intval($data[1]['nombre']);
+          } else {
+            if ($data[0]['type'] == 'like') {
+              $like = intval($data[0]['nombre']);
+              $unlike = 0;
+            } else {
+              $like = 0;
+              $unlike = intval($data[0]['nombre']);
+            }
+          }
           return round(($like / ($like + $unlike) * 100), 0, PHP_ROUND_HALF_UP);
         } else {
           return 0;

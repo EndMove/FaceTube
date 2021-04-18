@@ -39,17 +39,19 @@ include("php/includes/pages/video.inc.php");
             <span class="noflex"><i class="far fa-star"></i> <?php echo $video->evaluation.'%'; ?></span>
             <form method="POST">
               <input type="text" name="like" hidden>
-              <button class="active"><i class="far fa-thumbs-up"></i></button>
+              <button<?php echo ($eval=='like') ? ' class="active"' : ''?>><i class="far fa-thumbs-up"></i></button>
             </form>
             <form method="POST">
-              <input type="text" name="dislike" hidden>
-              <button><i class="far fa-thumbs-down"></i></button>
+              <input type="text" name="unlike" hidden>
+              <button<?php echo ($eval=='unlike') ? ' class="active"' : ''?>><i class="far fa-thumbs-down"></i></button>
             </form>
+            <?php if ($mine) { ?>
             <a href="<?php echo 'edit-video.php?id='.$video->id; ?>" target="_blank"><i class="fas fa-cog"></i></a>
             <a href="<?php echo 'moderate-video.php?id='.$video->id; ?>" target="_blank"><i class="fas fa-user-cog"></i></a>
+            <?php } ?>
           </div>
           <div class="info">
-            <p>ndifffneinfj jefjebreb</p>
+            <p><?php echo $video->description; ?></p>
           </div>
         </div>
       </section>

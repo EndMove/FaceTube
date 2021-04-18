@@ -7,7 +7,6 @@ if (!isConnected()) {
   die();
 }
 
-
 // Variable d'information sur les erreurs, succès.
 $infoErrors = array();
 $infoSucc   = '';
@@ -35,3 +34,13 @@ if (!$mine) {
     die();
   }
 }
+
+// Evaluation
+if (isset($_POST['like']) OR isset($_POST['unlike'])) {
+  $action = isset($_POST['like']) ? 'like' : 'unlike';
+  $video->addEvaluation($infoErrors, $_SESSION['account']['id'], $action);
+  $video->evaluation = $video->countEvaluation($infoErrors);
+}
+$eval = $video->getEvaluationOfAMember($infoErrors, $_SESSION['account']['id']);
+
+$video->addView($infoErrors, $_SESSION['account']['id']);

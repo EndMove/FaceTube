@@ -23,7 +23,7 @@ const CONFIG = array(
     "smtpauthentication"  => true,
     "smtphost"            => "mail31.lwspanel.com",
     "smtpusername"        => "contact@endmove.eu",
-    "smtppassword"        => '',
+    "smtppassword"        => 'wZ7$jn4xPM',
     "smtpport"            => 587,
     "smtpdebug"           => false,
   ),
