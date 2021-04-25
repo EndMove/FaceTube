@@ -42,6 +42,9 @@ require ROOT . '/php/class/DBManager.php';
 # Member classe
 require ROOT . '/php/class/Member.php';
 
+# Comment Classe
+require ROOT . '/php/class/Comment.php';
+
 # Video Classe
 require ROOT . '/php/class/Video.php';
 

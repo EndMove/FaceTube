@@ -28,9 +28,9 @@ if (!$mine) {
     header('Location: ' . getRootUrl(true) . '/home.php');
     die();
   }
-  $priority = 0;
-} else $priority = 1;
+  $channel->setPriority(0);
+} else $channel->setPriority(1);
 
 // Get user and channel data
-$channels = $channel->exportAll($infoErrors, $id, $priority);
+$channels = $channel->exportAll($infoErrors, $id);
 $member->import($infoErrors, $id);

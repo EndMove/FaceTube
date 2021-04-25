@@ -19,13 +19,13 @@ include("php/includes/pages/edit-channel.inc.php");
   <main>
     <h1 class="text-center">Ajouter ou modifier une une chaîne</h1>
     <?php showError($infoErrors); showSuccess($infoSucc); ?>
-    <form id="form" method="POST" action="" enctype="multipart/form-data">
+    <form id="form" method="POST" action="<?php echo $formAction; ?>" enctype="multipart/form-data">
       <div class="field">
-        <label for="name">Le nom de la chaîne</label><input type="text" id="name" name="name" placeholder="Nom de la chaine" value="<?php echo isset($name) ? $name : ''; ?>">
+        <label for="name" class="required">Le nom de la chaîne</label><input type="text" id="name" name="name" placeholder="Nom de la chaine" value="<?php echo isset($name) ? $name : ''; ?>" required>
       </div>
       <div class="field">
         <label for="public">La chaine est elle public ?</label>
-        <select id="public" name="public">
+        <select id="public" name="public" required>
           <option value="public" <?php echo $public ? 'selected' : ''; ?>>Publique</option>
           <option value="private" <?php echo $public ? '' : 'selected'; ?>>Privée</option>
         </select>

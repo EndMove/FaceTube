@@ -11,6 +11,9 @@ if (!isConnected()) {
 $infoErrors = array();
 $infoSucc   = '';
 
+// Form action
+$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
+
 // Objet Chaine
 $channel = new video\Channel($bdd);
 $video = new video\Video($bdd);
@@ -22,8 +25,10 @@ $name = NULL;
 // Option GET (charger chaine existante || supprimer chaine).
 if (isset($_GET['id'])) {
   $id = secure::int($_GET['id']);
+  $formAction .= "?id=$id";
   // Récupérer chaine et vérifier qu'on est propriétaire
-  $channel->import($infoErrors, $id, 1);
+  $channel->setPriority(1);
+  $channel->import($infoErrors, $id);
   if ($channel->fk_owner != $_SESSION['account']['id']) {
     header('Location: ' . getRootUrl(true) . '/profile.php');
     die();
@@ -31,6 +36,7 @@ if (isset($_GET['id'])) {
   // Options
   if (isset($_GET['option'])) {
     $option = secure::string($_GET['option']);
+    $formAction .= "&otpion=$option";
     switch ($option) {
       case 'remove':
         $videos = $video->exportAll($infoErrors, $id);

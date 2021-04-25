@@ -12,8 +12,9 @@ CREATE TABLE IF NOT EXISTS compte (
   couriel VARCHAR(255) NOT NULL,
   mot_de_passe VARCHAR(255) NOT NULL,
   est_bloque BOOLEAN NOT NULL DEFAULT false,
+  is_admin BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_compte)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table Chaine
 CREATE TABLE IF NOT EXISTS chaine (
@@ -26,7 +27,7 @@ CREATE TABLE IF NOT EXISTS chaine (
   est_bloquee BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_chaine),
   FOREIGN KEY (fk_compte) REFERENCES compte (id_compte) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table Video
 CREATE TABLE IF NOT EXISTS video (
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS video (
   est_bloquee BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_video),
   FOREIGN KEY (fk_chaine) REFERENCES chaine (id_chaine) ON DELETE CASCADE
-);
+) ENGINE=InnoDB;
 
 -- Table Commentaire
 CREATE TABLE IF NOT EXISTS commentaire (
@@ -53,17 +54,16 @@ CREATE TABLE IF NOT EXISTS commentaire (
   PRIMARY KEY (id_commentaire),
   FOREIGN KEY (fk_compte) REFERENCES compte (id_compte) ON DELETE CASCADE,
   FOREIGN KEY (fk_video) REFERENCES video (id_video) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table Demande
 CREATE TABLE IF NOT EXISTS demande (
-  id_compte_demandeur INT NOT NULL,
-  id_compte_destinataire INT NOT NULL,
+  id_compte_demandeur INT UNSIGNED NOT NULL,
+  id_compte_destinataire INT UNSIGNED NOT NULL,
   est_acceptee BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_compte_demandeur, id_compte_destinataire),
-  FOREIGN KEY (id_compte_demandeur) REFERENCES compte (id_compte) ON DELETE CASCADE,
-  FOREIGN KEY (id_compte_destinataire) REFERENCES compte (id_compte) ON DELETE CASCADE
-);
+  FOREIGN KEY (id_compte_demandeur) REFERENCES compte (id_compte) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table Voir
 CREATE TABLE IF NOT EXISTS voir (
@@ -73,14 +73,14 @@ CREATE TABLE IF NOT EXISTS voir (
   PRIMARY KEY (id_compte, id_video),
   FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
   FOREIGN KEY (id_video) REFERENCES video (id_video) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table Evaluer
 CREATE TABLE IF NOT EXISTS evaluer (
   id_compte INT UNSIGNED NOT NULL,
   id_video INT UNSIGNED NOT NULL,
-  evaluation ENUM('like','unlike') NOT NULL,
+  evaluation INT NOT NULL,
   PRIMARY KEY (id_compte, id_video),
   FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
   FOREIGN KEY (id_video) REFERENCES video (id_video) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -40,7 +40,7 @@ include("php/includes/pages/profile.inc.php");
     <section>
       <div class="flex action-button">
         <h2>Chaîne: <?php echo $ch->name; ?></h2>
-        <?php echo ($ch->ispublic) ? '<p>(Privée)</p>' : ''; ?>
+        <?php echo (!$ch->ispublic) ? '<p>(Privée)</p>' : ''; ?>
         <?php if ($mine) { ?>
         <a href="<?php echo 'edit-channel.php?id=' . $ch->id; ?>" target="_blank"><i class="fas fa-edit"></i></a>
         <a href="<?php echo 'edit-channel.php?id=' . $ch->id . '&option=remove'; ?>"><i class="fas fa-trash-alt"></i></a>
@@ -67,6 +67,8 @@ include("php/includes/pages/profile.inc.php");
                 <a class="link" href="<?php echo('channel.php?id=' . $ch->id); ?>"><?php echo $ch->name; ?></a>
                 <div class="meta">
                   <span><i class="far fa-eye"></i> <?php echo($vi->views); ?></span>
+                  <span><i class="far fa-star"></i> <?php echo($vi->evaluation); ?></span>
+                  <span><i class="far fa-comments"></i> <?php echo($vi->comment); ?></span>
                   <span><i class="far fa-clock"></i> <?php echo($vi->duration); ?></span>
                 </div>
               </div>

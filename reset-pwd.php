@@ -18,7 +18,7 @@ include("php/includes/pages/reset-pwd.inc.php");
 
   <main>
     <h1 class="text-center">Réinitialiser mot de passe</h1>
-    <form id="form" method="POST" action="">
+    <form id="form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
       <div class="split">
         <div class="field">
           <label for="password">Mot de passe</label><input type="password" id="password" name="password" placeholder="***********">

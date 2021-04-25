@@ -4,7 +4,7 @@
  *
  * @package     video
  *
- * @version     1.0
+ * @version     1.1
  *
  * @author      Jérémi Nihart <contact@endmove.eu>
  * @copyright   © 2021 EndMove, Tous droits réservés.
@@ -33,6 +33,7 @@ use Secure;
 class Video {
   private $bdd;
   private $data;
+  private $priority = 0;
 
   const CANT_SET = array('bdd', 'id');
   const CANT_GET = array('bdd');
@@ -49,7 +50,8 @@ class Video {
       'miniature' => NULL,
       'isblocked' => false,
       'views' => -1,
-      'evaluation' => -1
+      'evaluation' => -1,
+      'comment' => -1
     );
   }
 
@@ -92,6 +94,22 @@ class Video {
   }
 
   /**
+   * Éditer la priorité des action en raport avec la vidéo.
+   *
+   * @param       int $value Niveau de priorité pour les action lié a l'importation...
+   *                         Niveau de priorité disponibles : <br>
+   *                         0: chargement normal ; <br>
+   *                         1: normal + vidéos supprimées.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function setPriority($value) {
+    $this->priority = (verify::enum($value, [0,1])) ? $value : 0;
+  }
+
+  /**
    * Éditer des données locales de la vidéo.
    * Voir {@see update()} pour mettre à jour en base de données.
    *
@@ -100,6 +118,7 @@ class Video {
    *
    * @since 1.0
    *
+   * @see         verify
    * @author      Jérémi N 'EndMove'
    */
   public function setData($dataArray) {
@@ -127,6 +146,19 @@ class Video {
       }
     }
     return $data;
+  }
+
+  /**
+   * Récupérer le niveau de priorité de la vidéo.
+   *
+   * @return      int Le niveau de priorité : 0, 1.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getPriority() {
+    return $this->priority;
   }
 
   /**
@@ -295,22 +327,19 @@ class Video {
    *                      False: Échec importation.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id L'id de la vidéo à importer.
-   * @param       int $priority Niveau de priorité: <br>
-   *                            0: chargement normal ; <br>
-   *                            1: normal + vidéos supprimées.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function import(&$errArray, $id, $priority = 0) {
+  public function import(&$errArray, $id) {
     $id = empty($id) ? $this->data['id'] : $id;
     if ($id < 0) {
       addError("L'ID de la vidéo à importer est inconnu", $errArray);
       return false;
     }
     try {
-      if ($priority == 1) {
+      if ($this->priority == 1) {
         $query = $this->bdd->prepare("SELECT *
                                       FROM video
                                       WHERE id_video = :id");
@@ -348,7 +377,15 @@ class Video {
         if ($evaluation !== false) {
           $this->data['evaluation'] = $evaluation;
         } else {
-          addError("Impossible de récupérer la valeur des évaluations de la vidéo", $errArray);
+          addError("Impossible de récupérer la valeur de l'évaluation de la vidéo", $errArray);
+        }
+        // comment value
+        $comment = new Comment($this->bdd);
+        $commentVal = $comment->count($errArray, $this->data['id']);
+        if ($commentVal !== false) {
+          $this->data['comment'] = $commentVal;
+        } else {
+          addError("Impossible de récupérer le nombre de commentaires de la vidéo", $errArray);
         }
         return true;
       } else {
@@ -369,9 +406,6 @@ class Video {
    *                            False: Échec exportation.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id L'id de la chaine.
-   * @param       int $priority Niveau de priorité: <br>
-   *                            0: chargement normal ; <br>
-   *                            1: normal + vidéos supprimées.
    * @param       int $limitoffset Tableau contenant la limit puis l'offset de
    *                               la requête select (ex: [5, 10]).
    *
@@ -379,14 +413,14 @@ class Video {
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function exportAll(&$errArray, $id, $priority = 0, $limitoffset = null) {
+  public function exportAll(&$errArray, $id, $limitoffset = null) {
     if (empty($id) || $id <= -1) {
       addError("ID de la chaine invalide invalide", $errArray);
       return false;
     }
     try {
       $addToRequeste = empty($limitoffset) ? '' : secure::sql("LIMIT ".$limitoffset[0].", ".$limitoffset[1]);
-      if ($priority == 1) {
+      if ($this->priority == 1) {
         $query = $this->bdd->prepare("SELECT id_video
                                       FROM video
                                       WHERE fk_chaine = :id
@@ -410,7 +444,8 @@ class Video {
         $videos = array();
         foreach ($data as $value) {
           $video = new Video($this->bdd);
-          $video->import($errArray, $value['id_video'], $priority);
+          $video->setPriority($this->priority);
+          $video->import($errArray, $value['id_video']);
           $videos[] = $video;
         }
         return $videos;
@@ -489,7 +524,7 @@ class Video {
   /**
    * Récupérer l'évaluation d'un membre.
    *
-   * @return      string|boolean Type d'évaluation d'un membre ou false en cas d'échec.
+   * @return      int|boolean Évaluatio d'un membre ou false en cas d'échec.
    * @param       array $errArray Le tableau d'erreurs du siteweb.
    * @param       int $idMember L'id du membre.
    * @param       int $idVideo L'id de la vidéo.
@@ -524,10 +559,10 @@ class Video {
    * Ajouter une évaluation et ou la modifier, voir la
    * supprimer si add la même éval que celle qui existe déjà.
    *
-   * @return      int|boolean Le nombre de vue ou false en cas d'échec.
+   * @return      boolean true (succès) ou false en cas d'échec.
    * @param       array $errArray Le tableau d'erreurs du siteweb.
    * @param       int $idMember L'id du membre qui veut évaluer la vidéo.
-   * @param       string $choice Type d'évaluation <u>'like'</u>, <u>'unlike'</u>.
+   * @param       int $choice Cote de l'évaluation.
    * @param       int $idVideo L'id de la vidéo.
    *
    * @since 1.0
@@ -536,14 +571,14 @@ class Video {
    */
   public function addEvaluation(&$errArray, $idMember, $choice, $idVideo = null) {
     $id = empty($idVideo) ? $this->data['id'] : $idVideo;
-    if (!verify::enum($choice, ['like','unlike'])) {
-      addError("Valeur entré dans le système d'évaluation incorrect", $errArray);
+    if (!verify::enum($choice, ['-1','1','2','3','4','5'])) {
+      addError("Valeur entré dans le système d'évaluation incorrect [-1,1,2,3,4,5]", $errArray);
       return false;
     }
     try {
       $getEval = $this->getEvaluationOfAMember($errArray, $idMember, $idVideo);
       if ($getEval) {
-        if ($getEval == $choice) {
+        if ($choice == '-1') {
           $query = $this->bdd->prepare("DELETE FROM evaluer
                                         WHERE id_compte = :id_compte AND id_video = :id_video");
           $query->bindValue(':id_compte', $idMember, PDO::PARAM_INT);
@@ -561,7 +596,7 @@ class Video {
                                         WHERE id_compte = :id_compte AND id_video = :id_video");
           $query->bindValue(':id_compte', $idMember, PDO::PARAM_INT);
           $query->bindValue(':id_video', $id, PDO::PARAM_INT);
-          $query->bindValue(':evaluation', $choice, PDO::PARAM_STR);
+          $query->bindValue(':evaluation', $choice, PDO::PARAM_INT);
           if ($query->execute()) {
             $query->closeCursor();
             return true;
@@ -570,14 +605,14 @@ class Video {
             addError("Erreur lors de l'exécution de la requète SQL", $errArray);
           }
         }
-      } else {
+      } elseif ($choice != '-1') {
         $query = $this->bdd->prepare("INSERT INTO evaluer
                                       (id_compte, id_video, evaluation)
                                       VALUES
                                       (:id_compte, :id_video, :evaluation)");
         $query->bindValue(':id_compte', $idMember, PDO::PARAM_INT);
         $query->bindValue(':id_video', $id, PDO::PARAM_INT);
-        $query->bindValue(':evaluation', $choice, PDO::PARAM_STR);
+        $query->bindValue(':evaluation', $choice, PDO::PARAM_INT);
         if ($query->execute()) {
           $query->closeCursor();
           return true;
@@ -593,9 +628,9 @@ class Video {
   }
 
   /**
-   * Génère un pourcentage avec les évaluations de la vidéo.
+   * Génère une cote sur 5 avec les évaluations.
    *
-   * @return      boolean|int Pourcentage 0 à 100% ou false si erreur.
+   * @return      boolean|int Cote de 0 à 5 ou false si erreur.
    * @param       array $errArray Tableau d'erreurs du siteweb.
    * @param       int $idVideo Id de la vidéo dont il faut get les évaluations.
    *
@@ -606,30 +641,15 @@ class Video {
   public function countEvaluation(&$errArray, $idVideo = null) {
     $id = empty($idVideo) ? $this->data['id'] : $idVideo;
     try {
-      $query = $this->bdd->prepare("SELECT evaluation AS type, count(evaluation) AS nombre
+      $query = $this->bdd->prepare("SELECT AVG(evaluation) AS score
                                     FROM evaluer
-                                    WHERE id_video = :id_video
-                                    GROUP BY evaluation
-                                    ORDER BY evaluation ASC");
+                                    WHERE id_video = :id_video");
       $query->bindValue(':id_video', $id, PDO::PARAM_INT);
       if ($query->execute()) {
         $count = $query->rowCount();
         if ($count > 0) {
-          $data = $query->fetchAll(PDO::FETCH_ASSOC);
-          $query->closeCursor();
-          if ($count == 2) {
-            $like = intval($data[0]['nombre']);
-            $unlike = intval($data[1]['nombre']);
-          } else {
-            if ($data[0]['type'] == 'like') {
-              $like = intval($data[0]['nombre']);
-              $unlike = 0;
-            } else {
-              $like = 0;
-              $unlike = intval($data[0]['nombre']);
-            }
-          }
-          return round(($like / ($like + $unlike) * 100), 0, PHP_ROUND_HALF_UP);
+          return round($query->fetch(PDO::FETCH_ASSOC)['score']);
+
         } else {
           return 0;
         }

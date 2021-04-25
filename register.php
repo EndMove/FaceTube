@@ -19,27 +19,27 @@ include("php/includes/pages/register.inc.php");
   <main>
     <h1 class="text-center">Inscription</h1>
     <?php showError($infoErrors); showSuccess($infoSucc); ?>
-    <form id="form" method="POST" action="">
+    <form id="form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
       <div class="split">
         <div class="field">
-          <label for="lastname">Nom</label><input type="text" id="lastname" name="lastname" placeholder="Nihart" value="<?php echo isset($lastname) ? $lastname : ''; ?>">
+          <label for="lastname" class="required">Nom</label><input type="text" id="lastname" name="lastname" placeholder="Nihart" value="<?php echo isset($lastname) ? $lastname : ''; ?>" required>
         </div>
         <div class="field">
-          <label for="firstname">Prénom</label><input type="text" id="firstname" name="firstname" placeholder="Jérémi" value="<?php echo isset($firstname) ? $firstname : ''; ?>">
+          <label for="firstname" class="required">Prénom</label><input type="text" id="firstname" name="firstname" placeholder="Jérémi" value="<?php echo isset($firstname) ? $firstname : ''; ?>" required>
         </div>
       </div>
       <div class="field">
-        <label for="pseudonym">Pseudonyme</label><input type="text" id="pseudonym" name="pseudonym" placeholder="EndMove" value="<?php echo isset($pseudonym) ? $pseudonym : ''; ?>">
+        <label for="pseudonym" class="required">Pseudonyme</label><input type="text" id="pseudonym" name="pseudonym" placeholder="EndMove" value="<?php echo isset($pseudonym) ? $pseudonym : ''; ?>" required>
       </div>
       <div class="field">
-        <label for="email">Email</label><input type="email" id="email" name="email" placeholder="contact@endmove.eu" value="<?php echo isset($email) ? $email : ''; ?>">
+        <label for="email" class="required">Email</label><input type="email" id="email" name="email" placeholder="contact@endmove.eu" value="<?php echo isset($email) ? $email : ''; ?>" required>
       </div>
       <div class="field split">
         <div class="field">
-          <label for="password">Mot de passe</label><input type="password" id="password" name="password" placeholder="***********">
+          <label for="password" class="required">Mot de passe</label><input type="password" id="password" name="password" placeholder="***********" required>
         </div>
         <div class="field">
-          <label for="repeat_password">Mot de passe</label><input type="password" id="repeat_password" name="repeat_password" placeholder="***********">
+          <label for="repeat_password" class="required">Mot de passe</label><input type="password" id="repeat_password" name="repeat_password" placeholder="***********" required>
         </div>
       </div>
       <div class="split">

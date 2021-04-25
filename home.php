@@ -17,7 +17,7 @@ include("php/includes/pages/home.inc.php");
   </header>
 
   <main>
-    <form id="search-bar" method="POST">
+    <form id="search-bar" method="POST" action="search.php">
       <input type="text" id="query" name="query" placeholder="Rechercher...">
       <button><i class="fas fa-search"></i></button>
     </form>
@@ -46,6 +46,8 @@ include("php/includes/pages/home.inc.php");
                 <a class="link" href="<?php echo('channel.php?id=' . $data['ch']['id']); ?>"><?php echo $data['ch']['name']; ?></a>
                 <div class="meta">
                   <span><i class="far fa-eye"></i> <?php echo($video['views']); ?></span>
+                  <span><i class="far fa-star"></i> <?php echo($video['evaluation']); ?></span>
+                  <span><i class="far fa-comments"></i> <?php echo($video['comment']); ?></span>
                   <span><i class="far fa-clock"></i> <?php echo($video['duration']); ?></span>
                 </div>
               </div>

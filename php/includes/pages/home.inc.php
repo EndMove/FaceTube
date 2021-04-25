@@ -24,7 +24,7 @@ if ($friendsList != 'none') {
     if ($channelsList = $channel->exportAll($infoErrors, $fl['id'])) {
       foreach ($channelsList as $cl) {
         $vi = array();
-        if ($videosList = $video->exportAll($infoErrors, $cl->id, 0, [0, 3])) {
+        if ($videosList = $video->exportAll($infoErrors, $cl->id, [0, 3])) {
           foreach ($videosList as $vl) {
             $video->import($infoErrors, $vl->id);
             $vi[] = $video->getData();
@@ -38,6 +38,9 @@ if ($friendsList != 'none') {
         );
       }
     }
-
   }
+}
+if (empty($homeData)) {
+  header('Location: ' . getRootUrl(true) . '/profile.php');
+  die();
 }

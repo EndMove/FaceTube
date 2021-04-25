@@ -19,12 +19,12 @@ include("php/includes/pages/index.inc.php");
   <main>
     <h1 class="text-center">Connexion</h1>
     <?php showError($infoErrors); ?>
-    <form id="form" method="POST" action="">
+    <form id="form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
       <div class="field">
-        <label for="login">Email/Login</label><input type="text" id="login" name="login" placeholder="contact@endmove.eu / EndMove" value="<?php echo isset($login) ? $login : ''; ?>">
+        <label for="login" class="required">Email/Login</label><input type="text" id="login" name="login" placeholder="contact@endmove.eu / EndMove" value="<?php echo isset($login) ? $login : ''; ?>" required>
       </div>
       <div class="field">
-        <label for="password">Mot de passe</label><input type="password" id="password" name="password" placeholder="***********">
+        <label for="password" class="required">Mot de passe</label><input type="password" id="password" name="password" placeholder="***********" required>
       </div>
       <div class="split">
         <div class="field multi-link">

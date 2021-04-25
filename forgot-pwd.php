@@ -18,7 +18,7 @@ include("php/includes/pages/forgot-pwd.inc.php");
 
   <main>
     <h1 class="text-center">Mot de passe oublié</h1>
-    <form id="form" method="POST" action="">
+    <form id="form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
       <div class="field">
         <label for="email">Email</label><input type="email" id="email" name="email" placeholder="contact@endmove.eu">
       </div>

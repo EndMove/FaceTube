@@ -49,35 +49,36 @@ nav.main ul {
   margin: 0;
   padding: 0;
 }
-nav.main ul a {
+nav.main .banner a {
+  display: flex;
+  padding: 0 2em;
+  height: 100%;
+}
+nav.main .banner * {
+  align-self: center;
+  font-weight: bold;
+}
+nav.main .banner img {
+  width: 2.5em;
+  padding-right: 0.2em;
+}
+nav.main li:not(:first-child) a {
   display: inline-block;
   color: white;
   padding: 0.8em 1em;
 }
-nav.main ul li.green {
+nav.main li:not(:first-child) a:hover {
+  background-color: #383838;
+}
+nav.main li:not(:first-child) a.active {
+  background-color: #2ecc71;
+  color: white!important;
+}
+nav.main li.green {
   background-color: #27ae60;
 }
 nav.main ul li.red {
   background-color: #e74c3c;
-}
-nav.main ul li.banner {
-  display: flex;
-  padding: 0 2em;
-}
-nav.main ul li.banner * {
-  align-self: center;
-  font-weight: bold;
-}
-nav.main ul li.banner img {
-  width: 2.5em;
-  padding-right: 0.2em;
-}
-nav.main ul a:hover {
-  background-color: #383838;
-}
-nav.main ul a.active {
-  background-color: #2ecc71;
-  color: white!important;
 }
 /*==== #END# MAIN Nav Bar ====*/
 
@@ -481,13 +482,6 @@ div.myaccount a.btn-link {
 #video .meta .options {
   margin-left: auto;
 }
-#video .meta .options button {
-  width: 2.4em;
-  height: 2.4em;
-}
-#video .meta .options button.active {
-  color: #ffffff;
-}
 #video .meta .options *:not(:last-child) {
   margin-right: 0.5em;
 }
@@ -524,9 +518,6 @@ div.myaccount a.btn-link {
   font-size: 0.65em;
   margin: 0;
 }
-#video button:hover, #video input[type="submit"]:hover {
-  border-color: #9a9a9a;
-}
 /*Média query uniquement valable sur la page VIDEO !!!*/
 @media screen and (max-width: 600px) {
   main {
@@ -557,12 +548,6 @@ div.myaccount a.btn-link {
     height: 337.5px;
     width: 600px;
   }
-/*  #video .meta > .flex {
-    flex-direction: column;
-  }
-  #video .meta .options {
-    margin-left: 0;
-  }*/
 }
 /*____ #END# Video ____*/
 
@@ -628,6 +613,10 @@ input:focus, textarea:focus, select:focus {
 }
 input:disabled {
   color: #646464;
+}
+label.required:after {
+  content: ' *';
+  color: red;
 }
 /*colors*/
 input[type=submit].blue:hover, a.btn-link.blue:hover {
@@ -715,12 +704,3 @@ hr {
 .jsf-end {
   justify-content: flex-end;
 }
-/*.self-start {
-  align-self: flex-start;
-}
-.self-center {
-  align-self: center;
-}
-.self-end {
-  align-self: flex-end;
-}*/

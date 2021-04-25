@@ -73,7 +73,7 @@ include("php/includes/pages/friends.inc.php");
           <span class="date">Le D M Y</span>
         </div>
         <div class="flex align-right btn">
-          <form method="POST" action="">
+          <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="red" type="submit" name="cancel" value="Annuler">
           </form>

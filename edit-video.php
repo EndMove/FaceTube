@@ -19,29 +19,29 @@ include("php/includes/pages/edit-video.inc.php");
   <main>
     <h1 class="text-center">Ajouter ou modifier une vidéo</h1>
     <?php showError($infoErrors); showSuccess($infoSucc); ?>
-    <form id="form" method="POST" action="" enctype="multipart/form-data">
+    <form id="form" method="POST" action="<?php echo $formAction; ?>" enctype="multipart/form-data">
       <div class="field">
         <label for="channel">Chaîne de publication</label>
-        <select id="channel" name="channel">
+        <select id="channel" name="channel" required>
         <?php foreach ($channels as $ch) { ?>
           <option value="<?php echo $ch->id; ?>" <?php echo (isset($fk_channel) && $fk_channel == $ch->id) ? 'selected' : ''; ?>><?php echo $ch->name; ?></option>
         <?php } ?>
         </select>
       </div>
       <div class="field">
-        <label for="title">Titre</label><input type="text" id="title" name="title" placeholder="Titre de la vidéo" value="<?php echo isset($title) ? $title : ''; ?>">
+        <label for="title" class="required">Titre</label><input type="text" id="title" name="title" placeholder="Titre de la vidéo" value="<?php echo isset($title) ? $title : ''; ?>" required>
       </div>
       <div class="field">
-        <label for="description">Description</label><textarea id="description" name="description" rows="5"><?php echo isset($description) ? $description : ''; ?></textarea>
+        <label for="description" class="required">Description</label><textarea id="description" name="description" rows="5"><?php echo isset($description) ? $description : ''; ?></textarea>
       </div>
       <div class="field">
-        <label for="html_fragment">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="https://####.##" value='<?php echo isset($fragment) ? htmlspecialchars_decode($fragment) : ''; ?>'>
+        <label for="html_fragment" class="required">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="https://####.##" value='<?php echo isset($fragment) ? htmlspecialchars_decode($fragment) : ''; ?>' required>
       </div>
       <div class="field">
-        <label for="time">HTML5 Fragment</label><input type="time" id="time" step="1" name="time" placeholder="00:15:00" value="<?php echo isset($duration) ? $duration : ''; ?>">
+        <label for="time" class="required">HTML5 Fragment</label><input type="time" id="time" step="1" name="time" placeholder="00:15:00" value="<?php echo isset($duration) ? $duration : ''; ?>" required>
       </div>
       <div class="field">
-        <label for="banner">Mignature</label><input type="file" id="banner" name="banner">
+        <label for="banner" class="required">Mignature</label><input type="file" id="banner" name="banner" required>
       </div>
       <div class="split">
         <div class="field"></div>

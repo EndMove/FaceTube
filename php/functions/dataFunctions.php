@@ -221,7 +221,7 @@ class verify {
    */
   public static function password($password, &$errArray = null) {
     if (preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$#', $password)) return true;
-    addError("Le mot de passe n'est pas assez fort", $errArray);
+    addError("Le mot de passe n'est pas assez fort [a-zA-z0-9] minimum 6 caractères", $errArray);
     return false;
   }
 

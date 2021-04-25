@@ -18,7 +18,7 @@ include("php/includes/pages/search.inc.php");
 
   <main>
     <h1 class="text-center">Rechercher</h1>
-    <form id="search-bar" method="POST">
+    <form id="search-bar" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
       <input type="text" id="query" name="query" placeholder="Rechercher...">
       <button><i class="fas fa-search"></i></button>
     </form>

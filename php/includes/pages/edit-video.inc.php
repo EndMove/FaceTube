@@ -11,6 +11,9 @@ if (!isConnected()) {
 $infoErrors = array();
 $infoSucc   = '';
 
+// Form action
+$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
+
 // Objet Chaine
 $video = new video\Video($bdd);
 $channel = new video\Channel($bdd);
@@ -19,8 +22,9 @@ $channel = new video\Channel($bdd);
 $public = false;
 $name = NULL;
 
-// Récupérer toute les chaines
-$channels = $channel->exportAll($infoErrors, $_SESSION['account']['id'], 1);
+// Récupérer toutes les chaines
+$channel->setPriority(1);
+$channels = $channel->exportAll($infoErrors, $_SESSION['account']['id']);
 if ($channels === false) {
   addError("Vous devez créer une chaine avant d'ajouter une video", $infoErrors);
 }
@@ -28,9 +32,10 @@ if ($channels === false) {
 // Option GET - Charger vidéo; Supprimer vidéo.
 if (isset($_GET['id'])) {
   $id = secure::int($_GET['id']);
+  $formAction .= "?id=$id";
   // Récupérer la vidéo la chaine
   $video->import($infoErrors, $id);
-  $channel->import($infoErrors, $video->fk_channel, 1);
+  $channel->import($infoErrors, $video->fk_channel);
   // Vérifier le propriétaire
   if ($channel->fk_owner != $_SESSION['account']['id']) {
     header('Location: ' . getRootUrl(true) . '/profile.php');
@@ -39,6 +44,7 @@ if (isset($_GET['id'])) {
   // Options
   if (isset($_GET['option'])) {
     $option = secure::string($_GET['option']);
+    $formAction .="&option=$option";
     switch ($option) {
       case 'remove':
         $video->remove($infoErrors);
@@ -95,7 +101,7 @@ if (isset($_POST['submit'])) {
       $infoSucc = 'Création de la vidéo réussie !';
     }
   }
-  $channel->import($infoErrors, $fk_channel, 1);
+  $channel->import($infoErrors, $fk_channel);
   $channel->datelastvideo = retrieveDate(null, 'Y-m-d H:i:s');
   $channel->update($infoErrors);
 }

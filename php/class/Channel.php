@@ -4,7 +4,7 @@
  *
  * @package     video
  *
- * @version     1.0
+ * @version     1.1
  *
  * @author      Jérémi Nihart <contact@endmove.eu>
  * @copyright   © 2021 EndMove, Tous droits réservés.
@@ -32,6 +32,7 @@ use Verify;
 class Channel {
   private $bdd;
   private $data;
+  private $priority = 0;
 
   const CANT_SET = array('bdd', 'id');
   const CANT_GET = array('bdd');
@@ -88,6 +89,24 @@ class Channel {
   }
 
   /**
+   * Éditer la priorité des action en raport avec la chaine.
+   *
+   * @param       int $value Ordre de priorité pour l'accès à la chaine et son contenu
+   *                         Ordre de priorité de visionage. <br>
+   *                         0: chargement normal ; <br>
+   *                         1: normal + chaines privées ; <br>
+   *                         2: normal + privées + chaines bloquées.
+   *
+   * @since 1.1
+   *
+   * @see         verify
+   * @author      Jérémi N 'EndMove'
+   */
+  public function setPriority($value) {
+    $this->priority = (verify::enum($value, [0,1,2])) ? $value : 0;
+  }
+
+  /**
    * Éditer des données locales de la chaine.
    * Voir {@see update()} pour mettre à jour en base de données.
    *
@@ -123,6 +142,19 @@ class Channel {
       }
     }
     return $data;
+  }
+
+  /**
+   * Récupérer le niveau de priorité de la chaine.
+   *
+   * @return      int Le niveau de priorité : 0, 1, 2.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getPriority() {
+    return $this->priority;
   }
 
   /**
@@ -275,23 +307,19 @@ class Channel {
    *                      False: Échec importation.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id L'id de la chaine.
-   * @param       int $priority Ordre de priorité de visionage. <br>
-   *                            0: chargement normal ; <br>
-   *                            1: normal + chaines privées ; <br>
-   *                            2: normal + privées + chaines bloquées.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function import(&$errArray, $id, $priority = 0) {
+  public function import(&$errArray, $id) {
     $id = empty($id) ? $this->data['id'] : $id;
     if ($id < 0) {
       addError("L'ID de la chaine à importer est inconnu", $errArray);
       return false;
     }
     try {
-      switch ($priority) {
+      switch ($this->priority) {
         case 1:
           $query = $this->bdd->prepare("SELECT *
                                         FROM chaine
@@ -342,22 +370,18 @@ class Channel {
    *                            False: Échec exportation.
    * @param       array $errArray Tableau d'erreurs.
    * @param       int $id L'id du member propriétaire de la chaine.
-   * @param       int $priority Niveau de priorité: <br>
-   *                            0: chargement normal ; <br>
-   *                            1: normal + chaines privées ; <br>
-   *                            2: normal + privées + chaines bloquées.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function exportAll(&$errArray, $id, $priority = 0) {
+  public function exportAll(&$errArray, $id) {
     if (empty($id) || $id <= -1) {
       addError("ID du compte membre invalide", $errArray);
       return false;
     }
     try {
-      switch ($priority) {
+      switch ($this->priority) {
         case 1:
           $query = $this->bdd->prepare("SELECT id_chaine
                                         FROM chaine
@@ -385,7 +409,8 @@ class Channel {
         $channels = array();
         foreach ($data as $value) {
           $channel = new Channel($this->bdd);
-          $channel->import($errArray, $value['id_chaine'], $priority);
+          $channel->setPriority($this->priority);
+          $channel->import($errArray, $value['id_chaine']);
           $channels[] = $channel;
         }
         return $channels;

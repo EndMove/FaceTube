@@ -17,7 +17,7 @@ include("php/includes/pages/video.inc.php");
   </header>
 
   <main>
-    <form id="search-bar" method="POST">
+    <form id="search-bar" method="POST" action="search.php">
       <input type="text" id="query" name="query" placeholder="Rechercher...">
       <button><i class="fas fa-search"></i></button>
     </form>
@@ -36,14 +36,17 @@ include("php/includes/pages/video.inc.php");
             <span><i class="far fa-comments"></i> 000k</span>
           </div>
           <div class="flex options">
-            <span class="noflex"><i class="far fa-star"></i> <?php echo $video->evaluation.'%'; ?></span>
-            <form method="POST">
-              <input type="text" name="like" hidden>
-              <button<?php echo ($eval=='like') ? ' class="active"' : ''?>><i class="far fa-thumbs-up"></i></button>
-            </form>
-            <form method="POST">
-              <input type="text" name="unlike" hidden>
-              <button<?php echo ($eval=='unlike') ? ' class="active"' : ''?>><i class="far fa-thumbs-down"></i></button>
+            <span class="noflex"> <?php echo $video->evaluation.'/5'; ?> <i class="far fa-star"></i></span>
+            <form class="flex" method="POST" action="<?php echo $formAction; ?>">
+              <select name="score">
+                <option value="-1" <?php echo ($eval == false) ? 'selected' : ''?>>X</option>
+                <option value="1" <?php echo ($eval == '1') ? 'selected' : ''?>>1</option>
+                <option value="2" <?php echo ($eval == '2') ? 'selected' : ''?>>2</option>
+                <option value="3" <?php echo ($eval == '3') ? 'selected' : ''?>>3</option>
+                <option value="4" <?php echo ($eval == '4') ? 'selected' : ''?>>4</option>
+                <option value="5" <?php echo ($eval == '5') ? 'selected' : ''?>>5</option>
+              </select>
+              <input type="submit" name="evaluation" value="voter">
             </form>
             <?php if ($mine) { ?>
             <a href="<?php echo 'edit-video.php?id='.$video->id; ?>" target="_blank"><i class="fas fa-cog"></i></a>
@@ -67,7 +70,7 @@ include("php/includes/pages/video.inc.php");
         <div class="flex item">
           <img class="user" src="upload/user2.jpg" alt="Logo user">
           <div class="flex col">
-            <span>Nom d'utilsateur <div></div></span>
+            <span>Nom d'utilsateur</span>
             <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
           </div>
         </div>

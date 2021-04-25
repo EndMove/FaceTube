@@ -54,6 +54,8 @@ include("php/includes/pages/channel.inc.php");
                 <a class="link" href="<?php echo('channel.php?id=' . $channel->id); ?>"><?php echo $channel->name; ?></a>
                 <div class="meta">
                   <span><i class="far fa-eye"></i> <?php echo($vi->views); ?></span>
+                  <span><i class="far fa-star"></i> <?php echo($vi->evaluation); ?></span>
+                  <span><i class="far fa-comments"></i> <?php echo($vi->comment); ?></span>
                   <span><i class="far fa-clock"></i> <?php echo($vi->duration); ?></span>
                 </div>
               </div>

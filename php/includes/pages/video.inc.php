@@ -11,11 +11,15 @@ if (!isConnected()) {
 $infoErrors = array();
 $infoSucc   = '';
 
+// Form action
+$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
+
 // Get video id
 if (!isset($_GET['id'])) {
-  header('Location: ' . getRootUrl(true) . '/home.php');
+  header('Location: ' . getRootUrl(true) . '/profile.php');
   die();
 } else $id = secure::int($_GET['id']);
+$formAction .= "?id=$id";
 
 // Objets
 $channel = new video\Channel($bdd);
@@ -24,21 +28,22 @@ $member = new member\Member($bdd);
 
 // récupération des données
 $video->import($infoErrors, $id);
-$channel->import($infoErrors, $video->fk_channel, 1);
+$channel->setPriority(1);
+$channel->import($infoErrors, $video->fk_channel);
 
 // Sont amis ?
 $mine = $channel->fk_owner == $_SESSION['account']['id'];
 if (!$mine) {
   if (!$channel->ispublic || !$member->isFriend($infoErrors, $channel->fk_owner, $_SESSION['account']['id'])) {
-    header('Location: ' . getRootUrl(true) . '/home.php');
+    header('Location: ' . getRootUrl(true) . '/profile.php');
     die();
   }
 }
 
 // Evaluation
-if (isset($_POST['like']) OR isset($_POST['unlike'])) {
-  $action = isset($_POST['like']) ? 'like' : 'unlike';
-  $video->addEvaluation($infoErrors, $_SESSION['account']['id'], $action);
+if (isset($_POST['evaluation'])) {
+  $score = isset($_POST['score']) ?  $_POST['score'] : '-1';
+  $video->addEvaluation($infoErrors, $_SESSION['account']['id'], $score);
   $video->evaluation = $video->countEvaluation($infoErrors);
 }
 $eval = $video->getEvaluationOfAMember($infoErrors, $_SESSION['account']['id']);
