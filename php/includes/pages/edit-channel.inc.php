@@ -15,7 +15,7 @@ $infoSucc   = '';
 $formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
 
 // Objet Chaine
-$channel = new video\Channel($bdd);
+$channel = new channel\Channel($bdd);
 $video = new video\Video($bdd);
 
 // Variable par défaut

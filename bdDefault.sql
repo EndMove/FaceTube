@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS compte (
   couriel VARCHAR(255) NOT NULL,
   mot_de_passe VARCHAR(255) NOT NULL,
   est_bloque BOOLEAN NOT NULL DEFAULT false,
-  is_admin BOOLEAN NOT NULL DEFAULT false,
+  est_admin BOOLEAN NOT NULL DEFAULT false,
   PRIMARY KEY (id_compte)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -18,12 +18,13 @@ if (!isset($_GET['id'])) {
 } else $id = secure::int($_GET['id']);
 
 // Objets
-$channel = new video\Channel($bdd);
+$channel = new channel\Channel($bdd);
 $video = new video\Video($bdd);
 $member = new member\Member($bdd);
 
 // Récupération données
-$channel->import($infoErrors, $id, 1);
+$channel->setPriority(1);
+$channel->import($infoErrors, $id);
 $member->import($infoErrors, $channel->fk_owner);
 $videos = $video->exportAll($infoErrors, $id, 0);
 

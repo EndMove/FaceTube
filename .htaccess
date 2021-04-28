@@ -1,0 +1,22 @@
+# Par jérémi Nihart / EndMove
+# Pour FaceTube
+
+# Désativation de l'indexion de fichier pour les visiteur
+# sur la globalité du site web et ses répertoires.
+SetEnv REGISTER_GLOBALS 0
+Options -Indexes
+
+# Restriction d'accès au fichiers potentiellement sensibles.
+<FilesMatch "\.(sql|htaccess|gitattributes|html)$">
+    Require all denied
+</FilesMatch>
+
+# Définition du temps de concervation des images sur 3 mois
+# comme une image aillant un nom particulier ne saurait être
+# modifié après l'upload autant la concerver plusieurs mois.
+# (Temps de concervation par le navigateur de l'utilisateur)
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|webp|gif)$">
+        Header set Cache-Control "max-age=7884000, public"
+    </FilesMatch>
+</IfModule>

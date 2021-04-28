@@ -19,7 +19,7 @@ include("php/includes/pages/index.inc.php");
   <main>
     <h1 class="text-center">Connexion</h1>
     <?php showError($infoErrors); ?>
-    <form id="form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <form id="form" method="POST" action="<?php echo $formAction; ?>">
       <div class="field">
         <label for="login" class="required">Email/Login</label><input type="text" id="login" name="login" placeholder="contact@endmove.eu / EndMove" value="<?php echo isset($login) ? $login : ''; ?>" required>
       </div>

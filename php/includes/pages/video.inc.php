@@ -22,7 +22,7 @@ if (!isset($_GET['id'])) {
 $formAction .= "?id=$id";
 
 // Objets
-$channel = new video\Channel($bdd);
+$channel = new channel\Channel($bdd);
 $video = new video\Video($bdd);
 $member = new member\Member($bdd);
 
@@ -43,9 +43,9 @@ if (!$mine) {
 // Evaluation
 if (isset($_POST['evaluation'])) {
   $score = isset($_POST['score']) ?  $_POST['score'] : '-1';
-  $video->addEvaluation($infoErrors, $_SESSION['account']['id'], $score);
-  $video->evaluation = $video->countEvaluation($infoErrors);
+  $video->evaluationObject->addEvaluation($infoErrors, $_SESSION['account']['id'], $score);
+  $video->evaluation = $video->evaluationObject->countEvaluation($infoErrors);
 }
-$eval = $video->getEvaluationOfAMember($infoErrors, $_SESSION['account']['id']);
+$eval = $video->evaluationObject->getEvaluationOfAMember($infoErrors, $_SESSION['account']['id']);
 
 $video->addView($infoErrors, $_SESSION['account']['id']);

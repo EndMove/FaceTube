@@ -58,32 +58,6 @@ function getToken($value) {
 }
 
 /**
- * Génèrer un UUID unique d'après la norme UUID type 4.
- *
- * @return      string Un UUID unique.
- *
- * @see         mt_rand()
- * @author      Jérémi N 'EndMove'
- */
-function getUUID() {
-  return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-    // 32 bits pour "time_low".
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-    // 16 bits pour "time_mid".
-    mt_rand(0, 0xffff),
-    // 16 bits pour "time_hi_and_version",
-    // les quatre bits les plus significatifs contiennent le numéro de version (4).
-    mt_rand(0, 0x0fff) | 0x4000,
-    // 16 bits, 8 bits pour "clk_seq_hi_res",
-    // 8 bits pour "clk_seq_low",
-    // les deux bits les plus significatifs contiennent zéro et un pour la variante (DCE1.1).
-    mt_rand(0, 0x3fff) | 0x8000,
-    // 48 bits pour la "node".
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-  );
-}
-
-/**
  * Permet d'ajouter des erreurs au tableau d'erreurs.
  *
  * @return      array Le tableau d'erreur
@@ -207,6 +181,17 @@ function removeAccents($string) {
  */
 function isConnected() {
   return isset($_SESSION['account']);
+}
+
+/**
+ * Vérifier si l'utilisateur administrateur.
+ *
+ * @return      boolean True/False
+ *
+ * @author      Jérémi N 'EndMove'
+ */
+function isAdmin() {
+  return isset($_SESSION['account']) ? $_SESSION['account']['isadmin'] : false;
 }
 
 /**
@@ -353,5 +338,29 @@ function removeFile(&$errArray, $value) {
   } else {
     addError("Fichier innexistant", $errArray);
   }
+  return false;
+}
+
+/**
+ * Fonction de vérification reCaptchaV2 (Google API)
+ *
+ * @return      boolean True: succès <br>
+ *                      False: Erreur robot potentiel.
+ * @param       $rCAnswer string Token renvoyé par reCaptcha dans l'input du formulaire
+ *
+ * @author      Jérémi N 'EndMove'
+ */
+function reCaptchaV2($rCAnswer) {
+  $reCaptchaV2_secret = CONFIG['recaptchaV2']['recaptchasecret'];
+  $reCaptchaV2_answer = $rCAnswer;
+  $reCaptchaV2_remoteip = $_SERVER['REMOTE_ADDR'];
+  $reCaptchaV2_request = "https://www.google.com/recaptcha/api/siteverify"
+    . '?secret='   . $reCaptchaV2_secret
+    . '&response=' . $reCaptchaV2_answer
+    . '&remoteip=' . $reCaptchaV2_remoteip;
+
+  $reCaptchaV2_decode = json_decode(file_get_contents($reCaptchaV2_request), true);
+
+  if ($reCaptchaV2_decode['success']) return true;
   return false;
 }

@@ -2,7 +2,7 @@
       <ul>
         <li class="banner">
           <a href="home.php">
-            <img src="img/FaceTube-logo.png" alt="logo">
+            <img src="images/FaceTube-logo.png" alt="logo">
             <span>FaceTube</span>
           </a>
         </li>

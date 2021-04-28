@@ -4,6 +4,10 @@ $page = "login"; include("core.php");
 // Variable d'information sur les erreurs
 $infoErrors = array();
 
+// Form action
+$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
+if (isset($_GET['redirect'])) $formAction .= '?redirect='.urlencode($_GET['redirect']);
+
 // Redirige l'utilisateur si celui-ci est déjà connecté
 if (isConnected()) {
   if (isset($_GET['redirect'])) {

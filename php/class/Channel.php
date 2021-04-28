@@ -12,7 +12,7 @@
  * @since       1.0.0
  */
 
-namespace video;
+namespace channel;
 use Exception;
 use PDO;
 use Verify;
@@ -32,7 +32,7 @@ use Verify;
 class Channel {
   private $bdd;
   private $data;
-  private $priority = 0;
+  private $priority;
 
   const CANT_SET = array('bdd', 'id');
   const CANT_GET = array('bdd');
@@ -48,6 +48,7 @@ class Channel {
       'datelastvideo' => NULL,
       'isblocked' => 0
     );
+    $this->priority = 0;
   }
 
   /**

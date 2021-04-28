@@ -35,5 +35,8 @@ const CONFIG = array(
       "jpeg" => "image/jpeg",
       "png" => "image/png"
     )
-  )
+  ),
+  "recaptchaV2" => array(                         # Configuration ReCaptchaV3
+    "recaptchasecret" => "6Ld7U8IUAAAAAE4xkDXGxioL2ZN-7aXwFtRkkHVj"
+  ),
 );

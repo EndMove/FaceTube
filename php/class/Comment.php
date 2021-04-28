@@ -2,7 +2,7 @@
 /**
  * Comment, contien la class de gestion des commentaires des vidéos
  *
- * @package     comment
+ * @package     video
  *
  * @version     1.0
  *
@@ -30,9 +30,11 @@ use PDO;
  */
 class Comment {
   private $bdd;
+  private $idVideo;
 
-  public function __construct($bdd) {
-    $this->bdd = !empty($bdd) ? $bdd : NULL;
+  public function __construct($bdd, $idVideo) {
+    $this->bdd = empty($bdd) ? NULL : $bdd;
+    $this->idVideo = empty($idVideo) || !is_numeric($idVideo) ? -1 : $idVideo;
   }
 
   /**
@@ -40,17 +42,16 @@ class Comment {
    *
    * @return      array|boolean Tableau contenant tout les commentaire ou false en cas d'échec.
    * @param       array tableau d'erreurs du site web.
-   * @param       int $idVideo ID de la vidéo a laquel on veut ajouter un commentaire.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function getAll($errArray, $idVideo) {
+  public function getAll($errArray) {
     try {
       $query = $this->bdd->prepare("SELECT * FROM commentaire
                                     WHERE fk_video = :fk_video");
-      $query->bindValue(':fk_video', $idVideo, PDO::PARAM_INT);
+      $query->bindValue(':fk_video', $this->idVideo, PDO::PARAM_INT);
       if ($query->execute()) {
         return $query->fetchAll(PDO::FETCH_ASSOC);
       } else {
@@ -68,23 +69,31 @@ class Comment {
    *
    * @return      array|boolean Tableau contenant tout les commentaire ou false en cas d'échec.
    * @param       array tableau d'erreurs du site web.
-   * @param       int $idVideo ID de la vidéo.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function count($errArray, $idVideo) {
+  public function count($errArray) {
     try {
       $query = $this->bdd->prepare("SELECT COUNT(*) AS count FROM commentaire
                                     WHERE fk_video = :fk_video");
-      $query->bindValue(':fk_video', $idVideo, PDO::PARAM_INT);
+      $query->bindValue(':fk_video', $this->idVideo, PDO::PARAM_INT);
       if ($query->execute()) {
         return $query->fetch(PDO::FETCH_ASSOC)['count'];
       } else {
         $query->closeCursor();
         addError("Erreur lors de l'exécution de la requète SQL", $errArray);
       }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  public function add($errArray, $idMember, $value) {
+    try {
+
     } catch (Exception $e) {
       addError($e, $errArray, true);
     }

@@ -54,7 +54,8 @@ class Member {
       'login' => NULL,
       'email' => NULL,
       'password' => NULL,
-      'isblocked' => false
+      'isblocked' => false,
+      'isadmin' => false
     );
   }
 
@@ -482,6 +483,7 @@ class Member {
         $this->data['email'] = $data['couriel'];
         $this->data['password'] = $data['mot_de_passe'];
         $this->data['isblocked'] = $data['est_bloque'];
+        $this->data['isadmin'] = $data['est_admin'];
         return true;
       } else {
         $query->closeCursor();

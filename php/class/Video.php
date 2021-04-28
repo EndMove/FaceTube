@@ -33,7 +33,9 @@ use Secure;
 class Video {
   private $bdd;
   private $data;
-  private $priority = 0;
+  private $priority;
+  public $evaluationObject;
+  public $commentObject;
 
   const CANT_SET = array('bdd', 'id');
   const CANT_GET = array('bdd');
@@ -53,6 +55,9 @@ class Video {
       'evaluation' => -1,
       'comment' => -1
     );
+    $this->priority = 0;
+    $this->evaluationObject = NULL;
+    $this->commentObject = NULL;
   }
 
   /**
@@ -66,12 +71,19 @@ class Video {
    * @author      Jérémi N 'EndMove'
    */
   public function __get($name) {
-    if (!in_array($name, self::CANT_GET)) {
-      if (array_key_exists($name, $this->data)) {
-        return $this->data[$name];
-      }
+    switch ($name) {
+      case 'evaluationObject':
+        return $this->evaluationObject;
+      case 'commentObject':
+        return $this->commentObject;
+      default:
+        if (!in_array($name, self::CANT_GET)) {
+          if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
+          }
+        }
+        return 'Get request has been rejected';
     }
-    return 'Get request has been rejected';
   }
 
   /**
@@ -323,6 +335,9 @@ class Video {
    * Importer les données d'une vidéo présentes
    * en base de données en local.
    *
+   * <b>Attention:</b> Cette methode initialise aussi l'objet
+   * interne Evaluation et Comment de l'objet courrant.
+   *
    * @return      boolean True: Importation réussie <br>
    *                      False: Échec importation.
    * @param       array $errArray Tableau d'erreurs.
@@ -373,15 +388,16 @@ class Video {
           addError("Impossible de compter le nombre de vue de la vidéo", $errArray);
         }
         // evaluation value
-        $evaluation = $this->countEvaluation($errArray);
+        $this->evaluationObject = new Evaluation($this->bdd, $this->data['id']);
+        $evaluation = $this->evaluationObject->countEvaluation($errArray);
         if ($evaluation !== false) {
           $this->data['evaluation'] = $evaluation;
         } else {
           addError("Impossible de récupérer la valeur de l'évaluation de la vidéo", $errArray);
         }
         // comment value
-        $comment = new Comment($this->bdd);
-        $commentVal = $comment->count($errArray, $this->data['id']);
+        $this->commentObject = new Comment($this->bdd, $this->data['id']);
+        $commentVal = $this->commentObject->count($errArray);
         if ($commentVal !== false) {
           $this->data['comment'] = $commentVal;
         } else {
@@ -522,144 +538,30 @@ class Video {
   }
 
   /**
-   * Récupérer l'évaluation d'un membre.
+   * Donne accès a l'objet evaluation courant de la vidéo.
+   * <b>Nécessite d'avoir précédement importé une vidéo ! ({@see import()})</b>
    *
-   * @return      int|boolean Évaluatio d'un membre ou false en cas d'échec.
-   * @param       array $errArray Le tableau d'erreurs du siteweb.
-   * @param       int $idMember L'id du membre.
-   * @param       int $idVideo L'id de la vidéo.
+   * @return      object Objet Evaluation pré initialisé de la vidéo courante.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function getEvaluationOfAMember(&$errArray, $idMember, $idVideo = null) {
-    $id = empty($idVideo) ? $this->data['id'] : $idVideo;
-    try {
-      $query = $this->bdd->prepare("SELECT evaluation
-                                    FROM evaluer
-                                    WHERE id_compte = :id_compte AND id_video = :id_video");
-      $query->bindValue(':id_compte', $idMember, PDO::PARAM_INT);
-      $query->bindValue(':id_video', $id, PDO::PARAM_INT);
-      if ($query->execute()) {
-        if ($query->rowCount() > 0) {
-          return $query->fetch(PDO::FETCH_ASSOC)['evaluation'];
-        }
-      } else {
-        $query->closeCursor();
-        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
-      }
-    } catch (Exception $e) {
-      addError($e, $errArray, true);
-    }
-    return false;
+  public function evaluation() {
+    return $this->evaluationObject;
   }
 
   /**
-   * Ajouter une évaluation et ou la modifier, voir la
-   * supprimer si add la même éval que celle qui existe déjà.
+   * Donne accès a l'objet comment courant de la vidéo.
+   * <b>Nécessite d'avoir précédement importé une vidéo ! ({@see import()})</b>
    *
-   * @return      boolean true (succès) ou false en cas d'échec.
-   * @param       array $errArray Le tableau d'erreurs du siteweb.
-   * @param       int $idMember L'id du membre qui veut évaluer la vidéo.
-   * @param       int $choice Cote de l'évaluation.
-   * @param       int $idVideo L'id de la vidéo.
+   * @return      object Objet Comment pré initialisé de la vidéo courante.
    *
    * @since 1.0
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function addEvaluation(&$errArray, $idMember, $choice, $idVideo = null) {
-    $id = empty($idVideo) ? $this->data['id'] : $idVideo;
-    if (!verify::enum($choice, ['-1','1','2','3','4','5'])) {
-      addError("Valeur entré dans le système d'évaluation incorrect [-1,1,2,3,4,5]", $errArray);
-      return false;
-    }
-    try {
-      $getEval = $this->getEvaluationOfAMember($errArray, $idMember, $idVideo);
-      if ($getEval) {
-        if ($choice == '-1') {
-          $query = $this->bdd->prepare("DELETE FROM evaluer
-                                        WHERE id_compte = :id_compte AND id_video = :id_video");
-          $query->bindValue(':id_compte', $idMember, PDO::PARAM_INT);
-          $query->bindValue(':id_video', $id, PDO::PARAM_INT);
-          if ($query->execute()) {
-            $query->closeCursor();
-            return true;
-          } else {
-            $query->closeCursor();
-            addError("Erreur lors de l'exécution de la requète SQL", $errArray);
-          }
-        } else {
-          $query = $this->bdd->prepare("UPDATE evaluer
-                                        SET evaluation = :evaluation
-                                        WHERE id_compte = :id_compte AND id_video = :id_video");
-          $query->bindValue(':id_compte', $idMember, PDO::PARAM_INT);
-          $query->bindValue(':id_video', $id, PDO::PARAM_INT);
-          $query->bindValue(':evaluation', $choice, PDO::PARAM_INT);
-          if ($query->execute()) {
-            $query->closeCursor();
-            return true;
-          } else {
-            $query->closeCursor();
-            addError("Erreur lors de l'exécution de la requète SQL", $errArray);
-          }
-        }
-      } elseif ($choice != '-1') {
-        $query = $this->bdd->prepare("INSERT INTO evaluer
-                                      (id_compte, id_video, evaluation)
-                                      VALUES
-                                      (:id_compte, :id_video, :evaluation)");
-        $query->bindValue(':id_compte', $idMember, PDO::PARAM_INT);
-        $query->bindValue(':id_video', $id, PDO::PARAM_INT);
-        $query->bindValue(':evaluation', $choice, PDO::PARAM_INT);
-        if ($query->execute()) {
-          $query->closeCursor();
-          return true;
-        } else {
-          $query->closeCursor();
-          addError("Erreur lors de l'exécution de la requète SQL", $errArray);
-        }
-      }
-    } catch (Exception $e) {
-      addError($e, $errArray, true);
-    }
-    return false;
-  }
-
-  /**
-   * Génère une cote sur 5 avec les évaluations.
-   *
-   * @return      boolean|int Cote de 0 à 5 ou false si erreur.
-   * @param       array $errArray Tableau d'erreurs du siteweb.
-   * @param       int $idVideo Id de la vidéo dont il faut get les évaluations.
-   *
-   * @since 1.0
-   *
-   * @author      Jérémi N 'EndMove'
-   */
-  public function countEvaluation(&$errArray, $idVideo = null) {
-    $id = empty($idVideo) ? $this->data['id'] : $idVideo;
-    try {
-      $query = $this->bdd->prepare("SELECT AVG(evaluation) AS score
-                                    FROM evaluer
-                                    WHERE id_video = :id_video");
-      $query->bindValue(':id_video', $id, PDO::PARAM_INT);
-      if ($query->execute()) {
-        $count = $query->rowCount();
-        if ($count > 0) {
-          return round($query->fetch(PDO::FETCH_ASSOC)['score']);
-
-        } else {
-          return 0;
-        }
-      } else {
-        $query->closeCursor();
-        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
-      }
-    } catch (Exception $e) {
-      addError($e, $errArray, true);
-    }
-    return false;
+  public function comment() {
+    return $this->commentObject;
   }
 }

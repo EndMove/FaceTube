@@ -5,11 +5,13 @@
  * Version: 1.0.0
  */
 
-session_start();
-
 const ROOT = __DIR__;
 include ROOT . '/php/config/config.php';
 date_default_timezone_set(CONFIG['websiteTimezone']);
+
+# Session dossier de travail
+session_set_cookie_params(['path'=>CONFIG['websiteFolder']]);
+session_start();
 
 /*=========================================================================*
  *                                Libraries                                *
@@ -44,6 +46,9 @@ require ROOT . '/php/class/Member.php';
 
 # Comment Classe
 require ROOT . '/php/class/Comment.php';
+
+# Evaluation Classe
+require ROOT . '/php/class/Evaluation.php';
 
 # Video Classe
 require ROOT . '/php/class/Video.php';
