@@ -15,6 +15,7 @@
 namespace video;
 use Exception;
 use PDO;
+use Verify;
 
 /**
  * Comment
@@ -91,9 +92,36 @@ class Comment {
     return false;
   }
 
+  /**
+   * Ajoute un commentaire à la vidéo.
+   *
+   * @return      boolean True: ajout réussi,
+   *                      False: ajout erreur.
+   * @param       array Tableau d'erreurs du site web.
+   *
+   * @since 1.0
+   *
+   * @author      Jérémi N 'EndMove'
+   */
   public function add($errArray, $idMember, $value) {
     try {
-
+      if (empty($value)) {
+        addError('Le commentaire ne peux pas être vide !', $errArray);
+        return false;
+      }
+      $query = $this->bdd->prepare("INSERT INTO commentaire
+                                    (id_commentaire, fk_compte, fk_video, commentaire, date_pulication)
+                                    VALUES
+                                    (NULL, :idCompte, :idVideo, :value, NOW())");
+      $query->bindParam(':idCompte', $idMember, PDO::PARAM_INT);
+      $query->bindParam('idVideo', $this->idVideo, PDO::PARAM_INT);
+      $query->bindParam(':value', $value, PDO::PARAM_STR);
+      if ($query->execute()) {
+        return true;
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
     } catch (Exception $e) {
       addError($e, $errArray, true);
     }

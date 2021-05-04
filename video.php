@@ -28,7 +28,7 @@ include("php/includes/pages/video.inc.php");
       </section>
 
       <section class="meta">
-        <h2><?php echo $video->title; ?></h2>
+        <h1><?php echo $video->title; ?></h1>
         <div class="flex wrap">
           <div class="stats">
             <span><i class="far fa-eye"></i> <?php echo $video->views ?></span>
@@ -67,23 +67,43 @@ include("php/includes/pages/video.inc.php");
           </div>
         </form>
 
-        <div class="flex item">
+        <article class="flex item">
           <img class="user" src="upload/user2.jpg" alt="Logo user">
           <div class="flex col">
             <span>Nom d'utilsateur</span>
             <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
           </div>
-        </div>
+        </article>
 
-        <div class="flex item">
+        <article class="flex item">
           <img class="user" src="upload/user2.jpg" alt="Logo user">
           <div class="flex col">
             <span>Nom d'utilsateur</span>
             <p>Dans League of Legends, le joueur contrôle un champion aux compétences uniques dont la puissance augmente au fil de la partie se battant contre une équipe de joueurs en temps réel la plupart du temps. L'objectif d'une partie est, dans la quasi-totalité des modes de jeu, de détruire le « Nexus » ennemi, bâtiment situé au cœur de la base adverse protégé par des tourelles et inhibiteurs. Le jeu comporte un grand nombre de similitudes avec Defense of the Ancients de par le fait que la majorité des premiers développeurs de League of Legends n'étaient autres que les créateurs de DotA. (source: https://fr.wikipedia.org/wiki/League_of_Legends)</p>
           </div>
-        </div>
+        </article>
 
-        <div class="flex item">
+        <article class="flex item">
+          <img class="user" src="upload/user.png" alt="Logo user">
+          <div class="flex col">
+            <span>EndMoveMovie</span>
+            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
+          </div>
+          <form>
+            <input type="number" name="comment_remove" value="1" hidden>
+            <button><i class="far fa-trash-alt"></i></button>
+          </form>
+        </article>
+
+        <article class="flex item">
+          <img class="user" src="upload/user2.jpg" alt="Logo user">
+          <div class="flex col">
+            <span>Nom d'utilsateur</span>
+            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
+          </div>
+        </article>
+
+        <article class="flex item">
           <img class="user" src="upload/user.png" alt="Logo user">
           <div class="flex col">
             <span>EndMoveMovie</span>
@@ -93,51 +113,31 @@ include("php/includes/pages/video.inc.php");
             <input type="numeric" name="comment_remove" value="1" hidden>
             <button><i class="far fa-trash-alt"></i></button>
           </form>
-        </div>
+        </article>
 
-        <div class="flex item">
+        <article class="flex item">
           <img class="user" src="upload/user2.jpg" alt="Logo user">
           <div class="flex col">
             <span>Nom d'utilsateur</span>
             <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
           </div>
-        </div>
+        </article>
 
-        <div class="flex item">
-          <img class="user" src="upload/user.png" alt="Logo user">
-          <div class="flex col">
-            <span>EndMoveMovie</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-          <form>
-            <input type="numeric" name="comment_remove" value="1" hidden>
-            <button><i class="far fa-trash-alt"></i></button>
-          </form>
-        </div>
-
-        <div class="flex item">
+        <article class="flex item">
           <img class="user" src="upload/user2.jpg" alt="Logo user">
           <div class="flex col">
             <span>Nom d'utilsateur</span>
             <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
           </div>
-        </div>
+        </article>
 
-        <div class="flex item">
+        <article class="flex item">
           <img class="user" src="upload/user2.jpg" alt="Logo user">
           <div class="flex col">
             <span>Nom d'utilsateur</span>
             <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
           </div>
-        </div>
-
-        <div class="flex item">
-          <img class="user" src="upload/user2.jpg" alt="Logo user">
-          <div class="flex col">
-            <span>Nom d'utilsateur</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-        </div>
+        </article>
       </section>
     </section>
   </main>
