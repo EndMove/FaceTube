@@ -78,7 +78,6 @@ class Evaluation {
    * @param       array $errArray Le tableau d'erreurs du siteweb.
    * @param       int $idMember L'id du membre qui veut évaluer la vidéo.
    * @param       int $choice Cote de l'évaluation.
-   * @param       int $idVideo L'id de la vidéo.
    *
    * @since 1.0
    *
@@ -151,7 +150,7 @@ class Evaluation {
    *
    * @author      Jérémi N 'EndMove'
    */
-  public function countEvaluation(&$errArray) {
+  public function count(&$errArray) {
     try {
       $query = $this->bdd->prepare("SELECT AVG(evaluation) AS score
                                     FROM evaluer

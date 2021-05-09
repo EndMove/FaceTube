@@ -5,8 +5,7 @@ $page = "login"; include("core.php");
 $infoErrors = array();
 
 // Form action
-$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
-if (isset($_GET['redirect'])) $formAction .= '?redirect='.urlencode($_GET['redirect']);
+$formAction = htmlspecialchars($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
 
 // Redirige l'utilisateur si celui-ci est déjà connecté
 if (isConnected()) {

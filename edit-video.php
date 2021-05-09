@@ -35,10 +35,10 @@ include("php/includes/pages/edit-video.inc.php");
         <label for="description" class="required">Description</label><textarea id="description" name="description" rows="5"><?php echo isset($description) ? $description : ''; ?></textarea>
       </div>
       <div class="field">
-        <label for="html_fragment" class="required">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="https://####.##" value='<?php echo isset($fragment) ? htmlspecialchars_decode($fragment) : ''; ?>' required>
+        <label for="html_fragment" class="required">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="<iframe>...</iframe>" value='<?php echo isset($fragment) ? htmlspecialchars_decode($fragment) : ''; ?>' required>
       </div>
       <div class="field">
-        <label for="time" class="required">HTML5 Fragment</label><input type="time" id="time" step="1" name="time" placeholder="00:15:00" value="<?php echo isset($duration) ? $duration : ''; ?>" required>
+        <label for="time" class="required">Durée vidéo (hh:mm:ss)</label><input type="time" id="time" step="1" name="time" placeholder="00:15:00" value="<?php echo isset($duration) ? $duration : ''; ?>" required>
       </div>
       <div class="field">
         <label for="banner" class="required">Mignature</label><input type="file" id="banner" name="banner" required>

@@ -42,6 +42,7 @@ include("php/includes/pages/register.inc.php");
           <label for="repeat_password" class="required">Mot de passe</label><input type="password" id="repeat_password" name="repeat_password" placeholder="***********" required>
         </div>
       </div>
+      <div class="g-recaptcha" data-sitekey="<?php echo CONFIG['recaptchaV2']['recaptchasitekey']; ?>"></div>
       <div class="split">
         <div class="field link">
           <a href="index.php"><i class="fas fa-sign-in-alt"></i> J'ai déjà un compte</a>

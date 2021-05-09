@@ -88,6 +88,13 @@ if (isset($_POST['submit'])) {
     } else $data['miniature'] = $link;
   }
 
+  // GET CHANNEL + Check si l'utilisateur fraud
+  $channel->import($infoErrors, $fk_channel);
+  if ($channel->fk_owner !== $_SESSION['account']['id']) {
+    header('Location: ' . getRootUrl(true) . '/edit-channel.php');
+    die();
+  }
+
   $video->setData($data);
 
   if (isset($id)) {
@@ -101,7 +108,6 @@ if (isset($_POST['submit'])) {
       $infoSucc = 'Création de la vidéo réussie !';
     }
   }
-  $channel->import($infoErrors, $fk_channel);
   $channel->datelastvideo = retrieveDate(null, 'Y-m-d H:i:s');
   $channel->update($infoErrors);
 }

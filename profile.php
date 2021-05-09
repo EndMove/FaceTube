@@ -35,7 +35,7 @@ include("php/includes/pages/profile.inc.php");
     if ($channels !== false) {
       foreach ($channels as $ch) {
         $infoErrors = array();
-        $videos = $video->exportAll($infoErrors, $ch->id, 0, [0,5]);
+        $videos = $video->exportAll($infoErrors, $ch->id, [0,5]);
     ?>
     <section>
       <div class="flex action-button">
@@ -58,7 +58,7 @@ include("php/includes/pages/profile.inc.php");
             <img class="mignature" src="<?php echo(getFileUrl($vi->miniature)); ?>" alt="mignature">
           </a>
           <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
+            <a href="channel.php"><img class="user" src="images/user.png" alt="Logo Chaine"></a>
             <div class="flex col">
               <div class="title">
                 <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3><?php echo $vi->title; ?></h3></a>

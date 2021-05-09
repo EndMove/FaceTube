@@ -389,7 +389,7 @@ class Video {
         }
         // evaluation value
         $this->evaluationObject = new Evaluation($this->bdd, $this->data['id']);
-        $evaluation = $this->evaluationObject->countEvaluation($errArray);
+        $evaluation = $this->evaluationObject->count($errArray);
         if ($evaluation !== false) {
           $this->data['evaluation'] = $evaluation;
         } else {

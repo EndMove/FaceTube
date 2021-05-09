@@ -33,7 +33,7 @@ include("php/includes/pages/video.inc.php");
           <div class="stats">
             <span><i class="far fa-eye"></i> <?php echo $video->views ?></span>
             <span><i class="far fa-clock"></i> <?php echo $video->duration; ?></span>
-            <span><i class="far fa-comments"></i> 000k</span>
+            <span><i class="far fa-comments"></i> <?php echo $video->comment; ?></span>
           </div>
           <div class="flex options">
             <span class="noflex"> <?php echo $video->evaluation.'/5'; ?> <i class="far fa-star"></i></span>
@@ -58,90 +58,47 @@ include("php/includes/pages/video.inc.php");
           </div>
         </div>
       </section>
-
+      <?php showError($infoErrors); ?>
       <section class="comment">
-        <form>
+        <form method="POST" action="<?php echo $formAction; ?>">
           <textarea rows="4" placeholder="Ajouter un commentaire ..." name="comment_value"></textarea>
           <div class="com-add">
             <input type="submit" name="comment_submit" value="Publier">
           </div>
         </form>
 
-        <article class="flex item">
-          <img class="user" src="upload/user2.jpg" alt="Logo user">
+        <?php
+        if (empty($com)) {
+          showInfo("Aucun commentaire n'est disponible pour le moment.");
+        } else {
+          foreach ($com as $comContent) {
+            if (isset($commentRemoveID) && $commentRemoveID == $comContent['id_commentaire']) {
+              showInfo('<a href="'.$formAction.'&rc='.$comContent['id_commentaire'].'">Cliquez-ici</a> pour confirmer la suppression du commentaire.');
+            }
+        ?>
+        <article class="flex item" id="<?php echo $comContent['id_commentaire']; ?>">
+          <img class="user" src="images/user.png" alt="Logo user">
           <div class="flex col">
-            <span>Nom d'utilsateur</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
+            <span><?php echo $member->getPseudoByID($infoErrors, $comContent['fk_compte']); ?></span>
+            <span>Date: <?php echo retrieveDate(strtotime($comContent['date_publication'])); ?></span>
+            <p><?php echo $comContent['commentaire']; ?></p>
           </div>
-        </article>
-
-        <article class="flex item">
-          <img class="user" src="upload/user2.jpg" alt="Logo user">
-          <div class="flex col">
-            <span>Nom d'utilsateur</span>
-            <p>Dans League of Legends, le joueur contrôle un champion aux compétences uniques dont la puissance augmente au fil de la partie se battant contre une équipe de joueurs en temps réel la plupart du temps. L'objectif d'une partie est, dans la quasi-totalité des modes de jeu, de détruire le « Nexus » ennemi, bâtiment situé au cœur de la base adverse protégé par des tourelles et inhibiteurs. Le jeu comporte un grand nombre de similitudes avec Defense of the Ancients de par le fait que la majorité des premiers développeurs de League of Legends n'étaient autres que les créateurs de DotA. (source: https://fr.wikipedia.org/wiki/League_of_Legends)</p>
-          </div>
-        </article>
-
-        <article class="flex item">
-          <img class="user" src="upload/user.png" alt="Logo user">
-          <div class="flex col">
-            <span>EndMoveMovie</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-          <form>
-            <input type="number" name="comment_remove" value="1" hidden>
+          <?php if ($comContent['fk_compte'] == $_SESSION['account']['id']) { ?>
+          <form class="remove" method="POST" action="<?php echo $formAction.'#'.$comContent['id_commentaire']; ?>">
+            <input type="number" name="comment_remove" value="<?php echo $comContent['id_commentaire']; ?>" hidden>
             <button><i class="far fa-trash-alt"></i></button>
           </form>
+          <?php } ?>
         </article>
+        <?php
+          }
+        }
+        ?>
 
-        <article class="flex item">
-          <img class="user" src="upload/user2.jpg" alt="Logo user">
-          <div class="flex col">
-            <span>Nom d'utilsateur</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-        </article>
-
-        <article class="flex item">
-          <img class="user" src="upload/user.png" alt="Logo user">
-          <div class="flex col">
-            <span>EndMoveMovie</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-          <form>
-            <input type="numeric" name="comment_remove" value="1" hidden>
-            <button><i class="far fa-trash-alt"></i></button>
-          </form>
-        </article>
-
-        <article class="flex item">
-          <img class="user" src="upload/user2.jpg" alt="Logo user">
-          <div class="flex col">
-            <span>Nom d'utilsateur</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-        </article>
-
-        <article class="flex item">
-          <img class="user" src="upload/user2.jpg" alt="Logo user">
-          <div class="flex col">
-            <span>Nom d'utilsateur</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-        </article>
-
-        <article class="flex item">
-          <img class="user" src="upload/user2.jpg" alt="Logo user">
-          <div class="flex col">
-            <span>Nom d'utilsateur</span>
-            <p>Ceci est un commentaire, il pourrait être long ou court ! J'aime cette vidéo ou pas. J'écrit pour ne rien dire LMAO = L(augh)M(y)A(ss)O(ff)</p>
-          </div>
-        </article>
       </section>
     </section>
   </main>
-  
+
   <!-- Footer -->
   <?php include("php/includes/footer.inc.php"); ?>
   <!-- End Footer -->

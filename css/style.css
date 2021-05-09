@@ -508,15 +508,22 @@ div.myaccount a.btn-link {
 #video .comment .item .flex {
   margin-left: 5px;
 }
-#video .comment .item span {
+#video .comment .item span:first-child {
   font-size: 0.8em;
   font-weight: bold;
   line-height: 0;
-  padding: 20px 0;
+  padding: 12px 0 10px 0;
+}
+#video .comment .item span:not(:first-child) {
+  font-size: 0.6em;
+  text-decoration: underline;
 }
 #video .comment .item p {
   font-size: 0.65em;
-  margin: 0;
+  margin: 10px 0 0 0;
+}
+#video .comment .item .remove {
+  margin-left: auto;
 }
 /*Média query uniquement valable sur la page VIDEO !!!*/
 @media screen and (max-width: 600px) {
@@ -618,6 +625,9 @@ label.required:after {
   content: ' *';
   color: red;
 }
+div.g-recaptcha {
+  margin-bottom: 15px;
+}
 /*colors*/
 input[type=submit].blue:hover, a.btn-link.blue:hover {
   background-color: #235577;
@@ -644,6 +654,7 @@ hr {
   width: 50%;
   margin: 0 auto;
   padding: 0 15px;
+  font-size: 1rem;
 }
 .info-box.error {
   background-color: rgba(143, 24, 13, 0.65);

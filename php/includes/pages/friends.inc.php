@@ -7,6 +7,9 @@ if (!isConnected()) {
   die();
 }
 
+// Form action
+$formAction = htmlspecialchars($_SERVER['PHP_SELF']);
+
 // Variable d'information sur les erreurs, succès.
 $infoErrors = array();
 $infoSucc   = '';
@@ -34,9 +37,20 @@ if (isset($_POST['accept'])) {
 }
 
 // Refuser, supprimer, annuler ami
-if (isset($_POST['cancel']) || isset($_POST['reject']) || isset($_POST['remove'])) {
+if (isset($_POST['cancel']) || isset($_POST['reject'])) {
   $id = secure::string($_POST['user_id']);
   if ($member->updateFriend($infoErrors, $_SESSION['account']['id'], $id, 'remove')) {
+    $infoSucc = 'Vous venez de rejeter un début de relation';
+  }
+}
+# -- remove
+if (isset($_POST['remove'])) {
+  $friendRemoveID = secure::string($_POST['user_id']);
+}
+# -- remove confirm
+if (isset($_GET['rf'])) {
+  $rf = secure::int($_GET['rf']);
+  if ($member->updateFriend($infoErrors, $_SESSION['account']['id'], $rf, 'remove')) {
     $infoSucc = 'Vous venez de mettre fin à une relation Oo !';
   }
 }

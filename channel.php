@@ -45,7 +45,7 @@ include("php/includes/pages/channel.inc.php");
             <img class="mignature" src="<?php echo(getFileUrl($vi->miniature)); ?>" alt="mignature">
           </a>
           <div class="flex row">
-            <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
+            <a href="channel.php"><img class="user" src="images/user.png" alt="Logo Chaine"></a>
             <div class="flex col">
               <div class="title">
                 <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3><?php echo $vi->title;?></h3></a>

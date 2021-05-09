@@ -1,6 +1,6 @@
 /**
  * Powered By EndMove / Jérémi Nihart
- * Version : 1.0
+ * Version : 1.1
  */
 
 -- Table Compte
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS voir (
   id_compte INT UNSIGNED NOT NULL,
   id_video INT UNSIGNED NOT NULL,
   date_vue DATETIME NOT NULL,
-  PRIMARY KEY (id_compte, id_video),
+  PRIMARY KEY (id_compte, id_video, date_vue),
   FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
   FOREIGN KEY (id_video) REFERENCES video (id_video) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

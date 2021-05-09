@@ -12,7 +12,7 @@ $infoErrors = array();
 $infoSucc   = '';
 
 // Form action
-$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
+$formAction = htmlspecialchars($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
 
 // Objet Chaine
 $channel = new channel\Channel($bdd);
@@ -25,7 +25,6 @@ $name = NULL;
 // Option GET (charger chaine existante || supprimer chaine).
 if (isset($_GET['id'])) {
   $id = secure::int($_GET['id']);
-  $formAction .= "?id=$id";
   // Récupérer chaine et vérifier qu'on est propriétaire
   $channel->setPriority(1);
   $channel->import($infoErrors, $id);
@@ -36,7 +35,6 @@ if (isset($_GET['id'])) {
   // Options
   if (isset($_GET['option'])) {
     $option = secure::string($_GET['option']);
-    $formAction .= "&otpion=$option";
     switch ($option) {
       case 'remove':
         $videos = $video->exportAll($infoErrors, $id);

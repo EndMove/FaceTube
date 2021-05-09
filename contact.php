@@ -29,6 +29,7 @@ include("php/includes/pages/contact.inc.php");
       <div class="field">
         <label for="content" class="required">Message</label><textarea id="content" rows="8" placeholder="Rédigez votre message à l'intention de l'Admin ici" name="content"><?php echo isset($content) ? $content : ''; ?></textarea>
       </div>
+      <div class="g-recaptcha" data-sitekey="<?php echo CONFIG['recaptchaV2']['recaptchasitekey']; ?>"></div>
       <div class="field btn">
         <input type="submit" name="submit" value="Envoyer">
       </div>

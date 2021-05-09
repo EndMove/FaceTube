@@ -201,6 +201,35 @@ class Member {
   }
 
   /**
+   * Récupère le login d'un membre en fonction de son id.
+   *
+   * @return      string|boolean Le pseudo du membre ou false en cas d'échec.
+   * @param       array $errArray Tableau d'erreur du siteweb.
+   * @param       int $idMember L'id d'un membre.
+   *
+   * @since 1.1
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function getPseudoByID(&$errArray, $idMember) {
+    try {
+      $query = $this->bdd->prepare("SELECT login
+                                    FROM compte
+                                    WHERE id_compte = :id");
+      $query->bindValue(':id', $idMember, PDO::PARAM_INT);
+      if ($query->execute()) {
+        return $query->fetch(PDO::FETCH_ASSOC)['login'];
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
    * Permet de vérifier si toutes les données
    * locales respectent les attentes.
    *

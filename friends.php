@@ -27,17 +27,17 @@ include("php/includes/pages/friends.inc.php");
         foreach ($friendReceived as $item) {
       ?>
       <article class="user-item">
-        <img src="upload/user2.jpg" alt="Photo de profil">
+        <img src="images/user.png" alt="Photo de profil">
         <div class="flex col content">
           <span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span>
-          <span class="date">Le D M Y</span>
+          <span class="date">Le ##DATE##</span>
         </div>
         <div class="flex align-right btn">
-          <form method="POST" action="">
+          <form method="POST" action="<?php echo $formAction; ?>">
             <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="green" type="submit" name="accept" value="Accepter">
           </form>
-          <form method="POST" action="">
+          <form method="POST" action="<?php echo $formAction; ?>">
             <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="red" type="submit" name="reject" value="Refuser">
           </form>
@@ -56,7 +56,7 @@ include("php/includes/pages/friends.inc.php");
 
       <div class="flex add">
         <h2>Demandes d'amis en attentes</h2>
-        <form id="search-bar" class="align-right" method="POST" action="">
+        <form id="search-bar" class="align-right" method="POST" action="<?php echo $formAction; ?>">
           <input type="text" id="query" name="add_friend" placeholder="Ajouter un ami...">
           <button><i class="fas fa-plus"></i></button>
         </form>
@@ -67,13 +67,13 @@ include("php/includes/pages/friends.inc.php");
         foreach ($friendSent as $item) {
       ?>
       <article class="user-item">
-        <img src="upload/user2.jpg" alt="Photo de profil">
+        <img src="images/user.png" alt="Photo de profil">
         <div class="flex col content">
           <span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span>
-          <span class="date">Le D M Y</span>
+          <span class="date">Le ##DATE##</span>
         </div>
         <div class="flex align-right btn">
-          <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+          <form method="POST" action="<?php echo $formAction; ?>">
             <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
             <input class="red" type="submit" name="cancel" value="Annuler">
           </form>
@@ -94,18 +94,21 @@ include("php/includes/pages/friends.inc.php");
       <?php
       if (is_array($friendList)) {
         foreach ($friendList as $item) {
+          if (isset($friendRemoveID) && $friendRemoveID == $item['id']) {
+            showInfo('<a href="' . $formAction . '?rf=' . $item['id'] . '">Cliquez-ici</a> pour confirmer la suppression de cet ami.');
+          }
       ?>
-      <article class="user-item">
-        <img src="upload/user2.jpg" alt="Photo de profil">
+      <article class="user-item" id="<?php echo $item['id']; ?>">
+        <img src="images/user.png" alt="Photo de profil">
         <div class="flex col content">
           <a href="<?php echo 'profile.php?id='.$item['id']; ?>"><span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span></a>
-          <span class="date">Le D M Y</span>
+          <span class="date">Le ##DATE##</span>
         </div>
         <div class="flex align-right btn">
           <a class="btn-link blue" href="<?php echo 'profile.php?id='.$item['id']; ?>"><span><i class="fas fa-eye"></i></span></a>
-          <form method="POST" action="">
+          <form method="POST" action="<?php echo $formAction.'#'.$item['id']; ?>">
             <input type="number" name="user_id" value="<?php echo $item['id']; ?>" hidden>
-            <input class="red" type="submit" name="remove" value="Remove">
+            <input class="red" type="submit" name="remove" value="Supprimer">
           </form>
         </div>
       </article>
