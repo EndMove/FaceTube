@@ -33,7 +33,7 @@ a {
   text-decoration: none;
   color: white;
 }
-a:hover {
+a:hover, #form a:hover, #video .meta .options a:hover {
   color: #2ecc71;
 }
 
@@ -208,7 +208,7 @@ nav.pagination ul li a.active {
   height: 165px;
   width: 295px;
 }
-.video-item img.user {
+.video-item img.user, #video .comment .item img.user {
   width: 40px;
   height: 40px;
   clip-path: ellipse(50% 50%);
@@ -235,7 +235,7 @@ nav.pagination ul li a.active {
   color: #aaa;
   text-decoration: none;
 }
-.video-item div.col .sub-title span:not(:last-child)::after {
+.video-item div.col .sub-title span:not(:last-child)::after, #video .meta .stats span:not(:last-child)::after {
   content: " \002022 ";
 }
 .video-item div.col .sub-title a:hover, .video-item div.col .title a:hover {
@@ -293,14 +293,14 @@ nav.pagination ul li a.active {
   flex-direction: row;
   max-width: 100%;
 }
-#search-video .video-item img.user {
+#search-video .video-item img.user, #video .comment .item .flex {
   margin-left: 5px;
 }
 #search-video .video-item div.row {
   margin-top: 0;
   height: 165px;
 }
-#search-video .video-item di v.row {
+#search-video .video-item div.row, select, input[type=submit] {
   width: 100%;
 }
 #search-video .video-item div.col div.title * {
@@ -338,7 +338,7 @@ nav.pagination ul li a.active {
   display: inline-block;
   width: calc(50% - 2px);
 }
-#form .field {
+#form .field, div.g-recaptcha {
   margin-bottom: 15px;
 }
 #form .split:last-child * {
@@ -353,16 +353,10 @@ nav.pagination ul li a.active {
 #form a {
   color: #27ae60;
 }
-#form a:hover {
-  color: #2ecc71;
-}
 /*____ #END# Auth ____*/
 
 
 /*____ #START(page) Contact ____*/
-#form.contact {
-  width: 80%;
-}
 #form.contact .btn {
   text-align: center;
   margin-bottom: 0;
@@ -371,7 +365,7 @@ nav.pagination ul li a.active {
 
 
 /*____ #START(page) Myaccount ____*/
-#form.myaccount {
+#form.myaccount, #form.myaccount .field input, #form.contact {
   width: 80%;
 }
 #form.myaccount > .field:nth-child(-n+6) {
@@ -383,14 +377,8 @@ nav.pagination ul li a.active {
   line-height: 1.2em;
   margin-right: 1em;
 }
-#form.myaccount .field input {
-  width: 80%;
-}
 #form.myaccount .btn input {
   width: 50%;
-}
-div.myaccount {
-  display: flex;
 }
 div.myaccount a.btn-link {
   margin: 5px auto 0 auto;
@@ -422,9 +410,6 @@ div.myaccount a.btn-link {
 .friends .user-item .content .date {
   color: #aaa;
 }
-.friends .user-item .btn * {
-  padding: 0 8px 0 8px;
-}
 .friends .add form#search-bar {
   align-self: center;
   margin-top: 0;
@@ -437,6 +422,7 @@ div.myaccount a.btn-link {
 }
 .friends .user-item .btn * {
   align-self: center;
+  padding: 0 8px 0 8px;
 }
 .friends .user-item .btn a {
   max-height: 31.2px;
@@ -454,9 +440,6 @@ div.myaccount a.btn-link {
 #video section:not(:last-child) {
   margin-bottom: 1em;
 }
-#video .content {
-  text-align: center;
-}
 #video .content iframe {
   width: 760px;
   height: 427.5px;
@@ -466,20 +449,14 @@ div.myaccount a.btn-link {
   font-weight: normal;
   margin: 0 0 0.5em 0;
 }
-#video .meta .flex {
+#video .meta .flex, .action-button {
   align-items: center;
 }
 #video .meta span, #video .meta .options a, #video .meta button {
   font-size: 0.7em;
   color: #aaa;
 }
-#video .meta .options a:hover {
-  color: #2ecc71;
-}
-#video .meta .stats span:not(:last-child)::after {
-  content: " \002022 ";
-}
-#video .meta .options {
+#video .meta .options, .align-right, #video .comment .item .remove {
   margin-left: auto;
 }
 #video .meta .options *:not(:last-child) {
@@ -500,14 +477,6 @@ div.myaccount a.btn-link {
 #video .comment .item {
   margin: 1.2em 0;
 }
-#video .comment .item img.user {
-  width: 40px;
-  height: 40px;
-  clip-path: ellipse(50% 50%);
-}
-#video .comment .item .flex {
-  margin-left: 5px;
-}
 #video .comment .item span:first-child {
   font-size: 0.8em;
   font-weight: bold;
@@ -521,9 +490,6 @@ div.myaccount a.btn-link {
 #video .comment .item p {
   font-size: 0.65em;
   margin: 10px 0 0 0;
-}
-#video .comment .item .remove {
-  margin-left: auto;
 }
 /*Média query uniquement valable sur la page VIDEO !!!*/
 @media screen and (max-width: 600px) {
@@ -566,9 +532,6 @@ div.myaccount a.btn-link {
 
 /*____ #START(page)# Profile ____*/
 /*Action Button*/
-.action-button {
-  align-items: center;
-}
 .action-button p {
   color: #e30000;
 }
@@ -591,17 +554,11 @@ input, textarea, button, a.btn-link, select {
   background: #202020;
   color: white;
 }
-select {
-  width: 100%;
-}
 a.btn-link {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 35px;
-}
-input[type=submit] {
-  width: 100%;
 }
 button {
   height: 39px;
@@ -624,9 +581,6 @@ input:disabled {
 label.required:after {
   content: ' *';
   color: red;
-}
-div.g-recaptcha {
-  margin-bottom: 15px;
 }
 /*colors*/
 input[type=submit].blue:hover, a.btn-link.blue:hover {
@@ -683,9 +637,6 @@ hr {
 }
 .text-right {
   text-align: right;
-}
-.align-right {
-  margin-left: auto;
 }
 /*Flex Config*/
 .flex {

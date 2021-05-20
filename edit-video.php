@@ -18,7 +18,11 @@ include("php/includes/pages/edit-video.inc.php");
 
   <main>
     <h1 class="text-center">Ajouter ou modifier une vidéo</h1>
-    <?php showError($infoErrors); showSuccess($infoSucc); ?>
+    <?php showError($infoErrors); showSuccess($infoSucc);
+    if (isset($_POST['remove']) && isset($id)) {
+      showInfo('<a href="' . $formAction . '&rv=true">Cliquez-ici</a> pour confirmer la suppression de cette vidéo.');
+    }
+    ?>
     <form id="form" method="POST" action="<?php echo $formAction; ?>" enctype="multipart/form-data">
       <div class="field">
         <label for="channel">Chaîne de publication</label>
@@ -50,6 +54,14 @@ include("php/includes/pages/edit-video.inc.php");
         </div>
       </div>
     </form>
+
+    <?php if (isset($id)) { ?>
+    <div class="flex jsf-center">
+      <form method="POST" action="<?php echo $formAction; ?>">
+        <input class="red" type="submit" name="remove" value="(!) Supprimer la Vidéo (!)">
+      </form>
+    </div>
+    <?php } ?>
   </main>
   
   <!-- Footer -->

@@ -1,5 +1,30 @@
 <?php
 include("php/includes/pages/search.inc.php");
+
+// Variable d'information sur les erreurs, succès.
+$infoErrors = array();
+$infoSucc   = '';
+
+// Objet Chaine
+$member = new member\Member($bdd);
+$video = new video\Video($bdd);
+
+$member->import($infoErrors, $_SESSION['account']['id']);
+
+if (isset($_POST['query'])) {
+  $query = secure::string($_POST['query']);
+  $idFriends = array();
+
+  if (($friends = $member->getFriendList($infoErrors)) != 'none') {
+    foreach($friends as $val) {
+      $idFriends[] = $val['id'];
+    }
+  }
+  $data = $video->search($infoErrors, $query, $idFriends);
+} else {
+  header('Location: ' . getRootUrl(true) . '/profile.php');
+  die();
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -19,125 +44,48 @@ include("php/includes/pages/search.inc.php");
   <main>
     <h1 class="text-center">Rechercher</h1>
     <form id="search-bar" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-      <input type="text" id="query" name="query" placeholder="Rechercher...">
+      <input type="text" id="query" name="query" placeholder="Rechercher par mot clé...">
       <button><i class="fas fa-search"></i></button>
     </form>
-
+    <?php showSuccess($infoSucc); showError($infoErrors); ?>
     <section id="search-video" class="flex col">
 
+    <?php
+    if (empty($data)) {
+      showInfo("Aucun résultat pour votre recherche");
+    } else {
+      foreach ($data as $vi) { ?>
       <article class="video-item">
-        <a class="to-video" href="video.php">
-          <img class="mignature" src="upload/mignature02.webp" alt="mignature">
+        <a class="to-video" href="<?php echo('video.php?id=' . $vi->id); ?>">
+          <img class="mignature" src="<?php echo(getFileUrl($vi->miniature)); ?>" alt="mignature">
         </a>
         <div class="flex row">
-          <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
+          <a href="<?php echo('channel.php?id=' . $vi->fk_channel); ?>"><img class="user" src="images/user.png" alt="Logo Chaine"></a>
           <div class="flex col">
             <div class="title">
-              <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
+              <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3><?php echo $vi->title; ?></h3></a>
             </div>
             <div class="sub-title">
-              <a class="link" href="channel.php">K/DA</a>
+              <a class="link" href="<?php echo('channel.php?id=' . $vi->fk_channel); ?>">La Chaîne de l'auteur</a>
               <div class="meta">
-                <span><i class="far fa-eye"></i> 485k</span>
-                <span><i class="far fa-clock"></i> 20:15</span>
-                <span><i class="far fa-comments"></i> 541k</span>
-                <span><i class="far fa-star"></i> 47%</span>
+                <span><i class="far fa-eye"></i> <?php echo($vi->views); ?></span>
+                <span><i class="far fa-star"></i> <?php echo($vi->evaluation); ?></span>
+                <span><i class="far fa-comments"></i> <?php echo($vi->comment); ?></span>
+                <span><i class="far fa-clock"></i> <?php echo($vi->duration); ?></span>
               </div>
             </div>
             <div class="description">
-              <p>Montez sur le trône. K/DA est de retour avec « MORE », qui regroupe Madison Beer, SOYEON et MIYEON de (G)I-DLE, Lexie Liu, Jaira Burns et Séraphine. K/DA est un super-groupe musical composé d'Ahri, Evelynn, Akali et Kai'Sa. Ne manquez pas leur prochain EP, ALL OUT, qui paraîtra le 6 novembre 2020. Suivez l'actualité de @KDA_MUSIC sur Twitter et Instagram.</p>
+              <p><?php echo $vi->description; ?></p>
             </div>
           </div>
         </div>
       </article>
-      
-      <hr>
-      
-      <article class="video-item">
-        <a class="to-video" href="video.php">
-          <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-        </a>
-        <div class="flex row">
-          <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-          <div class="flex col">
-            <div class="title">
-              <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-            </div>
-            <div class="sub-title">
-              <a class="link" href="channel.php">K/DA</a>
-              <div class="meta">
-                <span><i class="far fa-eye"></i> 485k</span>
-                <span><i class="far fa-clock"></i> 20:15</span>
-                <span><i class="far fa-comments"></i> 541k</span>
-                <span><i class="far fa-star"></i> 47%</span>
-              </div>
-            </div>
-            <div class="description">
-              <p>Montez sur le trône. K/DA est de retour avec « MORE », qui regroupe Madison Beer, SOYEON et MIYEON de (G)I-DLE, Lexie Liu, Jaira Burns et Séraphine. K/DA est un super-groupe musical composé d'Ahri, Evelynn, Akali et Kai'Sa. Ne manquez pas leur prochain EP, ALL OUT, qui paraîtra le 6 novembre 2020. Suivez l'actualité de @KDA_MUSIC sur Twitter et Instagram.</p>
-            </div>
-          </div>
-        </div>
-      </article>
-      
-      <hr>
-      
-      <article class="video-item">
-        <a class="to-video" href="video.php">
-          <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-        </a>
-        <div class="flex row">
-          <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-          <div class="flex col">
-            <div class="title">
-              <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-            </div>
-            <div class="sub-title">
-              <a class="link" href="channel.php">K/DA</a>
-              <div class="meta">
-                <span><i class="far fa-eye"></i> 485k</span>
-                <span><i class="far fa-clock"></i> 20:15</span>
-                <span><i class="far fa-comments"></i> 541k</span>
-                <span><i class="far fa-star"></i> 47%</span>
-              </div>
-            </div>
-            <div class="description">
-              <p>Montez sur le trône. K/DA est de retour avec « MORE », qui regroupe Madison Beer, SOYEON et MIYEON de (G)I-DLE, Lexie Liu, Jaira Burns et Séraphine. K/DA est un super-groupe musical composé d'Ahri, Evelynn, Akali et Kai'Sa. Ne manquez pas leur prochain EP, ALL OUT, qui paraîtra le 6 novembre 2020. Suivez l'actualité de @KDA_MUSIC sur Twitter et Instagram.</p>
-            </div>
-          </div>
-        </div>
-      </article>
-      
-      <hr>
-      
-      <article class="video-item">
-        <a class="to-video" href="video.php">
-          <img class="mignature" src="upload/mignature02.webp" alt="mignature">
-        </a>
-        <div class="flex row">
-          <a href="channel.php"><img class="user" src="upload/user2.jpg" alt="Logo Chaine"></a>
-          <div class="flex col">
-            <div class="title">
-              <a href="video.php"><h3>MORE (avec Lexie Liu, Jaira Burns, Seraphine et League of Legends)</h3></a>
-            </div>
-            <div class="sub-title">
-              <a class="link" href="channel.php">K/DA</a>
-              <div class="meta">
-                <span><i class="far fa-eye"></i> 485k</span>
-                <span><i class="far fa-clock"></i> 20:15</span>
-                <span><i class="far fa-comments"></i> 541k</span>
-                <span><i class="far fa-star"></i> 47%</span>
-              </div>
-            </div>
-            <div class="description">
-              <p>Montez sur le trône. K/DA est de retour avec « MORE », qui regroupe Madison Beer, SOYEON et MIYEON de (G)I-DLE, Lexie Liu, Jaira Burns et Séraphine. K/DA est un super-groupe musical composé d'Ahri, Evelynn, Akali et Kai'Sa. Ne manquez pas leur prochain EP, ALL OUT, qui paraîtra le 6 novembre 2020. Suivez l'actualité de @KDA_MUSIC sur Twitter et Instagram.</p>
-            </div>
-          </div>
-        </div>
-      </article>
-
+      <?php
+        }
+      }
+      ?>
     </section>
-
-    <section>
+<!--    <section>
       <nav class="pagination">
         <ul class="jsf-end">
           <li><a href="#"><i class="fas fa-chevron-left"></i></a></li>
@@ -148,7 +96,7 @@ include("php/includes/pages/search.inc.php");
           <li><a href="#"><i class="fas fa-chevron-right"></i></a></li>
         </ul>
       </nav>
-    </section>
+    </section>-->
   </main>
   
   <!-- Footer -->

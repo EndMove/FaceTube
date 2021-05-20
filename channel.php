@@ -33,7 +33,7 @@ include("php/includes/pages/channel.inc.php");
     <section>
       <h2>Vidéos de la chaîne</h2>
 
-      <?php showError($infoErrors); showSuccess($infoSucc); ?>
+      <?php showSuccess($infoSucc); showError($infoErrors); ?>
 
       <div class="flex wrap">
     <?php

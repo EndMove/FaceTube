@@ -4,7 +4,7 @@
  *
  * @package     video
  *
- * @version     1.1
+ * @version     1.2
  *
  * @author      Jérémi Nihart <contact@endmove.eu>
  * @copyright   © 2021 EndMove, Tous droits réservés.
@@ -563,5 +563,57 @@ class Video {
    */
   public function comment() {
     return $this->commentObject;
+  }
+
+  /**
+   * Effectue une recherche par mot clé dans le site web
+   *
+   * @return      int|array list de vidéo ou false en cas d'échec.
+   * @param       array $errArray Le tableau d'erreurs du siteweb.
+   * @param       string $queryRequest query de recherche.
+   * @param       array $idMembres Tableau d'id des membres.
+   *
+   * @since 1.2
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function search(&$errArray, $queryRequest, $idMembres) {
+    try {
+      $fromMembers = "";
+      for ($i=0; $i < sizeof($idMembres); $i++) {
+        if ($i == sizeof($idMembres)-1) {
+          $fromMembers .= $idMembres[$i];
+        } else {
+          $fromMembers .= $idMembres[$i].',';
+        }
+      }
+
+      $query = $this->bdd->prepare("SELECT v.id_video
+                                    FROM video v
+                                    JOIN chaine c ON (c.id_chaine=v.fk_chaine)
+                                    WHERE c.fk_compte IN(:idmembres) AND v.intitule like :query");
+      $query->bindValue(':idmembres', $fromMembers, PDO::PARAM_STR);
+      $query->bindValue(':query', '%'.$queryRequest.'%', PDO::PARAM_STR);
+      if ($query->execute()) {
+        if ($query->rowCount() <= 0) {
+          //addError("Aucun résultat disponible pour votre recherche", $errArray);
+          return false;
+        }
+        $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        $videos = array();
+        foreach ($data as $value) {
+          $video = new Video($this->bdd);
+          $video->setPriority($this->priority);
+          $video->import($errArray, $value['id_video']);
+          $videos[] = $video;
+        }
+        return $videos;
+      }
+
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
   }
 }

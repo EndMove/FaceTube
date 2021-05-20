@@ -34,3 +34,17 @@ if (!$mine) {
 // Get user and channel data
 $channels = $channel->exportAll($infoErrors, $id);
 $member->import($infoErrors, $id);
+
+// MSG ?
+if (isset($_GET['msg'])) {
+  $msg = secure::string($_GET['msg']);
+
+  switch ($msg) {
+    case 'rc':
+      $infoSucc = 'Votre chaîne a été supprimée avec succès !';
+      break;
+    case 'cc':
+      $infoSucc = 'Votre nouvelle chaîne a été crée avec succès !';
+      break;
+  }
+}

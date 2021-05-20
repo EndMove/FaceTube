@@ -12,7 +12,7 @@ $infoErrors = array();
 $infoSucc   = '';
 
 // Form action
-$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
+$formAction = htmlspecialchars($_SERVER["PHP_SELF"].'?'.$_SERVER['QUERY_STRING']);
 
 // Objet Chaine
 $video = new video\Video($bdd);
@@ -32,37 +32,27 @@ if ($channels === false) {
 // Option GET - Charger vidéo; Supprimer vidéo.
 if (isset($_GET['id'])) {
   $id = secure::int($_GET['id']);
-  $formAction .= "?id=$id";
+
   // Récupérer la vidéo la chaine
   $video->import($infoErrors, $id);
   $channel->import($infoErrors, $video->fk_channel);
+
   // Vérifier le propriétaire
   if ($channel->fk_owner != $_SESSION['account']['id']) {
     header('Location: ' . getRootUrl(true) . '/profile.php');
     die();
   }
-  // Options
-  if (isset($_GET['option'])) {
-    $option = secure::string($_GET['option']);
-    $formAction .="&option=$option";
-    switch ($option) {
-      case 'remove':
-        $video->remove($infoErrors);
-        header('Location: ' . getRootUrl(true) . '/channel.php?id=' . $video->fk_channel);
-        die();
-      default:
-        addError("Option inconnue merci de vérifier votre requète HTTP", $infoErrors);
-        break;
-    }
-  }
+
   $fk_channel = $video->fk_channel;
   $title = $video->title;
   $description = $video->description;
   $fragment = $video->fragment;
   $duration = $video->duration;
+} else if (isset($_GET['ch'])) {
+  $fk_channel = secure::int($_GET['ch']);
 }
 
-// Option POST (mettre à jour chaine || créer chaine).
+// Option POST (mettre à jour vidéo || créer vidéo).
 if (isset($_POST['submit'])) {
   $fk_channel = secure::int($_POST['channel']);
   $title = secure::string($_POST['title']);
@@ -105,9 +95,18 @@ if (isset($_POST['submit'])) {
   } else {
     // Créer
     if ($video->create($infoErrors)) {
-      $infoSucc = 'Création de la vidéo réussie !';
+      header('Location: ' . getRootUrl(true) . '/channel.php?id=' . $video->fk_channel . '&msg=cv');
+      die();
     }
   }
   $channel->datelastvideo = retrieveDate(null, 'Y-m-d H:i:s');
   $channel->update($infoErrors);
+}
+
+// REMOVE VIDEO
+if (isset($_GET['rv']) && isset($id)) {
+  if ($video->remove($infoErrors)) {
+    header('Location: ' . getRootUrl(true) . '/channel.php?id=' . $video->fk_channel . '&msg=rv');
+    die();
+  }
 }

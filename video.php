@@ -18,12 +18,12 @@ include("php/includes/pages/video.inc.php");
 
   <main>
     <form id="search-bar" method="POST" action="search.php">
-      <input type="text" id="query" name="query" placeholder="Rechercher...">
+      <input type="text" id="query" name="query" placeholder="Rechercher par mot clé...">
       <button><i class="fas fa-search"></i></button>
     </form>
 
     <section id="video">
-      <section class="content">
+      <section class="content text-center">
         <?php echo htmlspecialchars_decode($video->fragment); ?>
       </section>
 

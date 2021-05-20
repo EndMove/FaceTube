@@ -36,3 +36,17 @@ if (!$mine) {
     die();
   }
 }
+
+// MSG ?
+if (isset($_GET['msg'])) {
+ $msg = secure::string($_GET['msg']);
+
+ switch ($msg) {
+   case 'rv':
+     $infoSucc = 'La vidéo à été supprimé avec succès !';
+     break;
+   case 'cv':
+     $infoSucc = 'La vidéo à été crée avec succès !';
+     break;
+ }
+}

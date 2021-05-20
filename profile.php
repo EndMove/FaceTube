@@ -29,9 +29,7 @@ include("php/includes/pages/profile.inc.php");
       </div>
     </div>
 
-    <?php showError($infoErrors); showSuccess($infoSucc); ?>
-
-    <?php
+    <?php showSuccess($infoSucc); showError($infoErrors);
     if ($channels !== false) {
       foreach ($channels as $ch) {
         $infoErrors = array();
