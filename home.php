@@ -24,7 +24,7 @@ include("php/includes/pages/home.inc.php");
 
     <?php foreach ($homeData as $data) { ?>
     <section>
-      <h2>De la chaine <u><a href="<?php echo('channel.php?id=' . $data['ch']['id']); ?>"><?php echo $data['ch']['name']; ?></a></u></h2>
+      <h2>De la chaine <u><a href="<?php echo('channel.php?id=' . $data['ch']['id']); ?>" <?php if ($data['ch']['isblocked']) {echo 'class="admin-txt"';} ?>><?php echo $data['ch']['name']; ?></a></u></h2>
       <?php
       if (empty($data['vi'])) {
         showInfo("Cette chaine ne contien aucune vidéo pour le moment.");
@@ -40,7 +40,7 @@ include("php/includes/pages/home.inc.php");
             <a href="channel.php"><img class="user" src="images/user.png" alt="Logo Chaine"></a>
             <div class="flex col">
               <div class="title">
-                <a href="<?php echo('video.php?id=' . $video['id']); ?>"><h3><?php echo $video['title']; ?></h3></a>
+                <a href="<?php echo('video.php?id=' . $video['id']); ?>"><h3 <?php if ($video['isblocked']) {echo 'class="admin-txt"';} ?>><?php echo $video['title']; ?></h3></a>
               </div>
               <div class="sub-title">
                 <a class="link" href="<?php echo('channel.php?id=' . $data['ch']['id']); ?>"><?php echo $data['ch']['name']; ?></a>

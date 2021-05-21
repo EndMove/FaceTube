@@ -380,10 +380,6 @@ nav.pagination ul li a.active {
 #form.myaccount .btn input {
   width: 50%;
 }
-div.myaccount a.btn-link {
-  margin: 5px auto 0 auto;
-  width: 20%;
-}
 /*____ #END# Myaccount ____*/
 
 
@@ -462,6 +458,9 @@ div.myaccount a.btn-link {
 #video .meta .options *:not(:last-child) {
   margin-right: 0.5em;
 }
+#video .meta select {
+  width: 55px;
+}
 #video .meta .info {
   font-size: 0.7em;
   width: 100%;
@@ -532,7 +531,7 @@ div.myaccount a.btn-link {
 
 /*____ #START(page)# Profile ____*/
 /*Action Button*/
-.action-button p {
+.action-button p, .admin-txt {
   color: #e30000;
 }
 .action-button *:not(last-child) {

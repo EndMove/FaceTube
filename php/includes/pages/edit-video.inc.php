@@ -1,5 +1,5 @@
 <?php
-$page = "home"; include("core.php");
+$page = "edit-video"; include("core.php");
 
 // Vérifier si le membre est connecté
 if (!isConnected()) {

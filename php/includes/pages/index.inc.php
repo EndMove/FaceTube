@@ -3,6 +3,7 @@ $page = "login"; include("core.php");
 
 // Variable d'information sur les erreurs
 $infoErrors = array();
+$infoSucc   = '';
 
 // Form action
 $formAction = htmlspecialchars($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
@@ -35,5 +36,16 @@ if (isset($_POST['submit'])) {
       header('Location: ' . getRootUrl(true) . '/home.php');
       die();
     }
+  }
+}
+
+// MSG ?
+if (isset($_GET['msg'])) {
+  $msg = secure::string($_GET['msg']);
+
+  switch ($msg) {
+    case 'rc':
+      $infoSucc = 'Votre compte, toutes vos données, commentaires, vidéos... ont été supprimé de manière définitif de nos servers !';
+      break;
   }
 }

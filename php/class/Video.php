@@ -579,21 +579,19 @@ class Video {
    */
   public function search(&$errArray, $queryRequest, $idMembres) {
     try {
-      $fromMembers = "";
-      for ($i=0; $i < sizeof($idMembres); $i++) {
-        if ($i == sizeof($idMembres)-1) {
-          $fromMembers .= $idMembres[$i];
-        } else {
-          $fromMembers .= $idMembres[$i].',';
-        }
-      }
+      /*$idMembres[] = $_SESSION['account']['id'];
+      sort($idMembres, SORT_NUMERIC);
+      $fromMembers = $idMembres[0];
+      for ($i=1; $i < sizeof($idMembres); $i++) {
+          $fromMembers .= ', '.$idMembres[$i];
+      }*/
 
       $query = $this->bdd->prepare("SELECT v.id_video
                                     FROM video v
                                     JOIN chaine c ON (c.id_chaine=v.fk_chaine)
-                                    WHERE c.fk_compte IN(:idmembres) AND v.intitule like :query");
-      $query->bindValue(':idmembres', $fromMembers, PDO::PARAM_STR);
+                                    WHERE (v.intitule like :query OR v.description like :query) AND v.est_bloquee = false AND c.est_bloquee = false");
       $query->bindValue(':query', '%'.$queryRequest.'%', PDO::PARAM_STR);
+      //$query->bindValue(':idmembres', "2, 1", PDO::PARAM_INT);
       if ($query->execute()) {
         if ($query->rowCount() <= 0) {
           //addError("Aucun résultat disponible pour votre recherche", $errArray);

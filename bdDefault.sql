@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS voir (
   id_video INT UNSIGNED NOT NULL,
   date_vue DATETIME NOT NULL,
   PRIMARY KEY (id_compte, id_video, date_vue),
-  FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
+  FOREIGN KEY (id_compte) REFERENCES compte (id_compte) ON DELETE CASCADE,
   FOREIGN KEY (id_video) REFERENCES video (id_video) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -81,6 +81,6 @@ CREATE TABLE IF NOT EXISTS evaluer (
   id_video INT UNSIGNED NOT NULL,
   evaluation INT NOT NULL,
   PRIMARY KEY (id_compte, id_video),
-  FOREIGN KEY (id_compte) REFERENCES compte (id_compte),
+  FOREIGN KEY (id_compte) REFERENCES compte (id_compte) ON DELETE CASCADE,
   FOREIGN KEY (id_video) REFERENCES video (id_video) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -48,7 +48,7 @@ include("php/includes/pages/channel.inc.php");
             <a href="channel.php"><img class="user" src="images/user.png" alt="Logo Chaine"></a>
             <div class="flex col">
               <div class="title">
-                <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3><?php echo $vi->title;?></h3></a>
+                <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3 <?php if ($vi->isblocked) {echo 'class="admin-txt"';} ?>><?php echo $vi->title;?></h3></a>
               </div>
               <div class="sub-title">
                 <a class="link" href="<?php echo('channel.php?id=' . $channel->id); ?>"><?php echo $channel->name; ?></a>

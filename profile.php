@@ -37,11 +37,11 @@ include("php/includes/pages/profile.inc.php");
     ?>
     <section>
       <div class="flex action-button">
-        <h2>Chaîne: <?php echo $ch->name; ?></h2>
+        <h2 <?php if ($ch->isblocked) {echo 'class="admin-txt"';} ?>>Chaîne: <?php echo $ch->name; ?></h2>
         <?php echo (!$ch->ispublic) ? '<p>(Privée)</p>' : ''; ?>
         <?php if ($mine) { ?>
         <a href="<?php echo 'edit-channel.php?id=' . $ch->id; ?>" target="_blank"><i class="fas fa-edit"></i></a>
-        <a href="<?php echo 'edit-channel.php?id=' . $ch->id . '&option=remove'; ?>"><i class="fas fa-trash-alt"></i></a>
+        <a href="<?php echo 'edit-video.php?ch=' . $ch->id; ?>"><i class="fas fa-plus"></i></a>
         <?php } ?>
       </div>
       <div class="flex wrap">
@@ -59,7 +59,7 @@ include("php/includes/pages/profile.inc.php");
             <a href="channel.php"><img class="user" src="images/user.png" alt="Logo Chaine"></a>
             <div class="flex col">
               <div class="title">
-                <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3><?php echo $vi->title; ?></h3></a>
+                <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3 <?php if ($vi->isblocked) {echo 'class="admin-txt"';} ?>><?php echo $vi->title; ?></h3></a>
               </div>
               <div class="sub-title">
                 <a class="link" href="<?php echo('channel.php?id=' . $ch->id); ?>"><?php echo $ch->name; ?></a>

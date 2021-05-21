@@ -5,7 +5,7 @@
  *
  * @package     member
  *
- * @version     1.1
+ * @version     1.2
  *
  * @author      Jérémi Nihart <contact@endmove.eu>
  * @copyright   © 2021 EndMove, Tous droits réservés.
@@ -467,6 +467,34 @@ class Member {
       $query->bindValue(':couriel', $this->data['email'], PDO::PARAM_STR);
       $query->bindValue(':mot_de_passe', $this->data['password'], PDO::PARAM_STR);
       $query->bindValue(':est_bloque', $this->data['isblocked'], PDO::PARAM_BOOL);
+      $query->bindValue(':id', $this->data['id'], PDO::PARAM_INT);
+      if ($query->execute()) {
+        $query->closeCursor();
+        return true;
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
+   * Permet de supprimer le compte d'un utilisateur
+   *
+   * @return      boolean True: Suppression réussie<br>
+   *                      False: échec supression.
+   * @param       array $errArray Tableau d'erreurs du projet.
+   *
+   * @since 1.2
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function remove(&$errArray) {
+    try {
+      $query = $this->bdd->prepare("DELETE FROM compte WHERE id_compte = :id");
       $query->bindValue(':id', $this->data['id'], PDO::PARAM_INT);
       if ($query->execute()) {
         $query->closeCursor();

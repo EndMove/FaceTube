@@ -66,7 +66,7 @@ if (isset($_POST['query'])) {
               <a href="<?php echo('video.php?id=' . $vi->id); ?>"><h3><?php echo $vi->title; ?></h3></a>
             </div>
             <div class="sub-title">
-              <a class="link" href="<?php echo('channel.php?id=' . $vi->fk_channel); ?>">La Chaîne de l'auteur</a>
+              <a class="link" href="<?php echo('channel.php?id=' . $vi->fk_channel); ?>">VISITER LA CHAÎNE DE L'AUTEUR</a>
               <div class="meta">
                 <span><i class="far fa-eye"></i> <?php echo($vi->views); ?></span>
                 <span><i class="far fa-star"></i> <?php echo($vi->evaluation); ?></span>

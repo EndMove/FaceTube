@@ -11,6 +11,12 @@ if (!isConnected()) {
 $infoErrors = array();
 $infoSucc   = '';
 
+// Objet membre
+$member = new member\Member($bdd);
+
+// Form action
+$formAction = htmlspecialchars($_SERVER["PHP_SELF"]);
+
 // Mise à jour informations compte
 if (isset($_POST['submit'])) {
   $lastname = secure::string($_POST['lastname']);
@@ -35,7 +41,6 @@ if (isset($_POST['submit'])) {
   }
 
   if ($status) {
-    $member = new member\Member($bdd);
     if ($member->import($infoErrors, $_SESSION['account']['id'])) {
       $member->setData($data);
       if ($member->update($infoErrors)) {
@@ -49,6 +54,16 @@ if (isset($_POST['submit'])) {
           sendEmail($infoErrors, $body, $subject, $_SESSION['account']['email']);
         }
       }
+    }
+  }
+}
+
+// supression compte
+if (isset($_GET['rc'])) {
+  if ($member->import($infoErrors, $_SESSION['account']['id'])) {
+    if ($member->remove($infoErrors)) {
+      header('Location: ' . getRootUrl(true) . '/logout.php?rc=true');
+      die();
     }
   }
 }

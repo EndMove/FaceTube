@@ -23,30 +23,40 @@ $video = new video\Video($bdd);
 $member = new member\Member($bdd);
 
 // Récupération données
-$channel->setPriority(1);
+$channel->setPriority(2);
 $channel->import($infoErrors, $id);
 $member->import($infoErrors, $channel->fk_owner);
-$videos = $video->exportAll($infoErrors, $id, 0);
 
 // Sont amis ?
 $mine = $channel->fk_owner == $_SESSION['account']['id'];
-if (!$mine) {
+if (!$mine && !isAdmin()) {
   if (!$channel->ispublic || !$member->isFriend($infoErrors, $channel->fk_owner, $_SESSION['account']['id'])) {
     header('Location: ' . getRootUrl(true) . '/home.php');
     die();
   }
+// récupération des donnée finales
+} elseif ($mine || isAdmin()) {
+  $channel->setPriority(2);
+  $video->setPriority(1);
+  $channel->import($infoErrors, $id);
+  $videos = $video->exportAll($infoErrors, $id, 0);
+}
+$videos = $video->exportAll($infoErrors, $id, 0);
+
+if ($channel->isblocked) {
+  addError('Cette chaine a été bloquée par un administrateur', $infoErrors);
 }
 
 // MSG ?
 if (isset($_GET['msg'])) {
- $msg = secure::string($_GET['msg']);
+  $msg = secure::string($_GET['msg']);
 
- switch ($msg) {
+  switch ($msg) {
    case 'rv':
      $infoSucc = 'La vidéo à été supprimé avec succès !';
      break;
    case 'cv':
      $infoSucc = 'La vidéo à été crée avec succès !';
      break;
- }
+  }
 }

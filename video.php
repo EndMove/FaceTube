@@ -28,7 +28,7 @@ include("php/includes/pages/video.inc.php");
       </section>
 
       <section class="meta">
-        <h1><?php echo $video->title; ?></h1>
+        <h1 <?php if ($video->isblocked) {echo 'class="admin-txt"';} ?>><?php echo $video->title; ?></h1>
         <div class="flex wrap">
           <div class="stats">
             <span><i class="far fa-eye"></i> <?php echo $video->views ?></span>
@@ -50,6 +50,8 @@ include("php/includes/pages/video.inc.php");
             </form>
             <?php if ($mine) { ?>
             <a href="<?php echo 'edit-video.php?id='.$video->id; ?>" target="_blank"><i class="fas fa-cog"></i></a>
+            <?php }
+            if (isAdmin()) { ?>
             <a href="<?php echo 'moderate-video.php?id='.$video->id; ?>" target="_blank"><i class="fas fa-user-cog"></i></a>
             <?php } ?>
           </div>

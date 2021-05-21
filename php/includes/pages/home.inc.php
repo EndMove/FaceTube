@@ -16,6 +16,11 @@ $channel = new channel\Channel($bdd);
 $video = new video\Video($bdd);
 $member = new member\Member($bdd);
 
+if (isAdmin()) {
+  $video->setPriority(1);
+  $channel->setPriority(2);
+}
+
 // Récupération des 3 dernières vidéos de chaque chaine des amis
 $homeData = array();
 $friendsList = $member->getFriendList($infoErrors, $_SESSION['account']['id']);

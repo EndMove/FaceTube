@@ -26,13 +26,18 @@ $video = new video\Video($bdd);
 $member = new member\Member($bdd);
 
 // récupération des données
+if (isAdmin()) {
+  $channel->setPriority(2);
+  $video->setPriority(1);
+} else {
+  $channel->setPriority(1);
+}
 $video->import($infoErrors, $id);
-$channel->setPriority(1);
 $channel->import($infoErrors, $video->fk_channel);
 
 // Sont amis ?
 $mine = $channel->fk_owner == $_SESSION['account']['id'];
-if (!$mine) {
+if (!$mine && !isAdmin()) {
   if (!$channel->ispublic || !$member->isFriend($infoErrors, $channel->fk_owner, $_SESSION['account']['id'])) {
     header('Location: ' . getRootUrl(true) . '/profile.php');
     die();

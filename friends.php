@@ -30,7 +30,7 @@ include("php/includes/pages/friends.inc.php");
         <img src="images/user.png" alt="Photo de profil">
         <div class="flex col content">
           <span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span>
-          <span class="date">Le ##DATE##</span>
+          <span class="date">La ##DATE##</span>
         </div>
         <div class="flex align-right btn">
           <form method="POST" action="<?php echo $formAction; ?>">
@@ -70,7 +70,7 @@ include("php/includes/pages/friends.inc.php");
         <img src="images/user.png" alt="Photo de profil">
         <div class="flex col content">
           <span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span>
-          <span class="date">Le ##DATE##</span>
+          <span class="date">La ##DATE##</span>
         </div>
         <div class="flex align-right btn">
           <form method="POST" action="<?php echo $formAction; ?>">
@@ -102,7 +102,7 @@ include("php/includes/pages/friends.inc.php");
         <img src="images/user.png" alt="Photo de profil">
         <div class="flex col content">
           <a href="<?php echo 'profile.php?id='.$item['id']; ?>"><span class="title"><?php echo strtoupper($item['login']) . ' - ' . $item['firstname'] . ' ' . $item['lastname']; ?></span></a>
-          <span class="date">Le ##DATE##</span>
+          <span class="date">La ##DATE##</span>
         </div>
         <div class="flex align-right btn">
           <a class="btn-link blue" href="<?php echo 'profile.php?id='.$item['id']; ?>"><span><i class="fas fa-eye"></i></span></a>

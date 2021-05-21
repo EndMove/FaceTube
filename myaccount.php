@@ -18,8 +18,12 @@ include("php/includes/pages/myaccount.inc.php");
 
   <main>
     <h1 class="text-center">Votre compte</h1>
-    <?php showError($infoErrors); showSuccess($infoSucc); ?>
-    <form id="form" class="myaccount" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <?php showError($infoErrors); showSuccess($infoSucc);
+    if (isset($_POST['remove'])) {
+      showInfo('<a href="' . $formAction . '?rc=true">Cliquez-ici</a> pour confirmer la suppression de votre compte (ATENTION ! cette action est iréversible).');
+    }
+    ?>
+    <form id="form" class="myaccount" method="POST" action="<?php echo $formAction; ?>">
       <div class="field">
         <label for="lastname" class="required">Nom</label><input type="text" id="lastname" name="lastname" placeholder="Nihart" value="<?php echo isset($lastname) ? $lastname : $_SESSION['account']['lastname']; ?>" required>
       </div>
@@ -46,11 +50,10 @@ include("php/includes/pages/myaccount.inc.php");
       </div>
     </form>
 
-    <div class="myaccount flex">
-      <a class="btn-link blue" href="profile.php"><span><i class="fas fa-id-badge"></i> Votre Profil</span></a>
-      <a class="btn-link blue" href="friends.php"><span><i class="fas fa-user-friends"></i> Vos Amis</span></a>
-      <a class="btn-link blue" href="edit-channel.php"><span><i class="fas fa-expand-arrows-alt"></i> Ajouter une chaine</span></a>
-      <a class="btn-link blue" href="edit-video.php"><span><i class="fas fa-video"></i> Ajouter une vidéo</span></a>
+    <div class="myaccount flex jsf-center">
+      <form method="POST" action="<?php echo $formAction; ?>">
+        <input class="red" type="submit" name="remove" value="(!) Supprimer le compte (!)">
+      </form>
     </div>
 
   </main>

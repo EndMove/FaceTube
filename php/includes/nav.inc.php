@@ -6,15 +6,22 @@
             <span>FaceTube</span>
           </a>
         </li>
-        <!--<li><a href="home.php" <?php if($page=='home') echo 'class="active"'; ?>>Accueil</a></li>-->
+        <?php if(isConnected()) { ?>
         <li>
-          <a href="search.php" <?php if($page=='search') echo 'class="active"'; ?>>Rechercher</a>
+          <a href="profile.php" <?php if($page=='profile') echo 'class="active"'; ?>>Profil</a>
         </li>
+        <li>
+          <a href="friends.php" <?php if($page=='friends') echo 'class="active"'; ?>>Vos amis</a>
+        </li>
+        <li>
+          <a href="edit-channel.php" <?php if($page=='edit-channel') echo 'class="active"'; ?>>Ajouter chaîne</a>
+        </li>
+        <li>
+          <a href="edit-video.php" <?php if($page=='edit-video') echo 'class="active"'; ?>>Ajouter vidéo</a>
+        </li>
+        <?php } ?>
         <li>
           <a href="contact.php" <?php if($page=='contact') echo 'class="active"'; ?>>Contact</a>
-        </li>
-        <li>
-          <a href="about.php" <?php if($page=='about') echo 'class="active"'; ?>>À propos</a>
         </li>
       <?php if (isConnected()) { ?>
         <li class="align-right">

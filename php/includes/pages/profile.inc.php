@@ -1,5 +1,5 @@
 <?php
-$page = "account"; include("core.php");
+$page = "profile"; include("core.php");
 
 // Vérifier si le membre est connecté
 if (!isConnected()) {
@@ -29,7 +29,10 @@ if (!$mine) {
     die();
   }
   $channel->setPriority(0);
-} else $channel->setPriority(1);
+} elseif ($mine || isAdmin()) {
+  $channel->setPriority(2);
+  $video->setPriority(1);
+}
 
 // Get user and channel data
 $channels = $channel->exportAll($infoErrors, $id);
