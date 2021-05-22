@@ -1,5 +1,5 @@
 <?php
-$page = "edit-video"; include("core.php");
+$page = "edit-channel"; include("core.php");
 
 // Vérifier si le membre est connecté
 if (!isConnected() || !isAdmin()) {
@@ -21,20 +21,20 @@ if (!isset($_GET['id'])) {
 } else $id = secure::int($_GET['id']);
 
 // Objet
-$video = new video\Video($bdd);
+$channel = new channel\Channel($bdd);
 
 // Récupération de la vidéo
-$video->setPriority(1);
-$video->import($infoErrors, $id);
+$channel->setPriority(2);
+$channel->import($infoErrors, $id);
 
-$block = $video->isblocked;
+$block = $channel->isblocked;
 
 // manage block
 if (isset($_POST['submit'])) {
   $blocked = secure::string($_POST['blocked']) == 'blocked';
 
-  $video->isblocked = $blocked;
-  if ($video->update($infoErrors)) {
-    $infoSucc = 'Vidéo mise à jour';
+  $channel->isblocked = $blocked;
+  if ($channel->update($infoErrors)) {
+    $infoSucc = 'Chaîne mise à jour';
   }
 }

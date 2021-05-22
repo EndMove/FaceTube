@@ -23,7 +23,7 @@ $member = new member\Member($bdd);
 
 // Sont amis ?
 $mine = $id == $_SESSION['account']['id'];
-if (!$mine) {
+if (!$mine && !isAdmin()) {
   if (!$member->isFriend($infoErrors, $id, $_SESSION['account']['id'])) {
     header('Location: ' . getRootUrl(true) . '/home.php');
     die();

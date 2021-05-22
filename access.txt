@@ -1,0 +1,47 @@
+Admin: EndMove - End42_
+User : Gashila - End42_
+other: Titouan - End42_
+
+----
+
+user01-06 : user01 - End42_
+
+----
+
+!!! Le htaccess block toute tentative d'accès à des données et fichiers sensibles !!!
+
+----
+
+Toutes les fonctionnalitées ont été intégré, voici les remarques
+de la V3 qui ont été rectifié en plus du dev de la V4:
+
+[x] Évaluation like/dislike sur 1 à 5 ;
+[x] .htaccess ;
+[x] Modifier la bar de navigation pour pouvoir allé à l'accueil en cliquant sur le logo.
+[x] Utiliser * pour les champs de formulaire obligatoires ;
+[x] Prévenir l'utilisateur du pattern lors de vérifications ;
+[x] Rendre accessible les fonctionnalitées importantes ;
+[x] Rendre fonctionnel les commentaires ;
+[x] Formater les action dans les formulaires ;
+[x] La session craie et détruit bien le cookie, et prend en compte le dossier d'installation du site web ;
+[x] Le nombre de vue par personne peut maintenant être supérieur à 1 ;
+[x] Titre des vidéo doivent être des H1 ;
+[ ] Flex extra config pas encore utilisé partout ;
+[x] Navigabilité complexe ;
+[x] Bouton (logo facetube) clicable pour retourner a l'accueil ;
+[x] Inserer une vidéo depuis la chaine ;
+[x] Icone d'édition des vidéos ;
+[x] Quand on s'inscrit sans rien complèter seul erreur (mdp) ;
+[x] Checker le formulaire d'édition de vidéos ;
+[x] Suppression de chaine aillant encore une vidéo doit être interdite ;
+[x] Corriger viniette vidéo manque informations ;
+[x] Corriger formulaire de recherche (doit retourner résultat valide) ;
+[x] Demande de confirmation pour suppression vidéo ;
+[x] Demande de confirmation pour suppression chaine ;
+[x] !!!!!!! Droits d'accès au dossier pour upload ;
+[x] Utiliser des article pour les commentaires ;
+
+----
+
+Comme indiqué dans l'EVAL_V4 on doit utiliser un system anti robot
+j'ai donc implémenté reCaptcha.

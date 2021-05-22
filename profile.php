@@ -42,6 +42,9 @@ include("php/includes/pages/profile.inc.php");
         <?php if ($mine) { ?>
         <a href="<?php echo 'edit-channel.php?id=' . $ch->id; ?>" target="_blank"><i class="fas fa-edit"></i></a>
         <a href="<?php echo 'edit-video.php?ch=' . $ch->id; ?>"><i class="fas fa-plus"></i></a>
+        <?php }
+        if (isAdmin()) { ?>
+        <a href="<?php echo 'moderate-channel.php?id=' . $ch->id; ?>" target="_blank"><i class="fas fa-user-cog"></i></a>
         <?php } ?>
       </div>
       <div class="flex wrap">

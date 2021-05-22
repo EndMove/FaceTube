@@ -19,6 +19,11 @@
         <li>
           <a href="edit-video.php" <?php if($page=='edit-video') echo 'class="active"'; ?>>Ajouter vidéo</a>
         </li>
+        <?php }
+        if (isAdmin()) { ?>
+          <li>
+            <a href="list-member.php" <?php if($page=='list-member') echo 'class="active"'; ?>>List des membres</a>
+          </li>
         <?php } ?>
         <li>
           <a href="contact.php" <?php if($page=='contact') echo 'class="active"'; ?>>Contact</a>

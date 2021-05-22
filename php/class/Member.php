@@ -72,7 +72,7 @@ class Member {
   public function __get($name) {
     if (!in_array($name, self::CANT_GET)) {
       if (array_key_exists($name, $this->data)) {
-        return empty($this->data[$name]) ? 'No value defined yet' : $this->data[$name];
+        return $this->data[$name];
       }
     }
     return 'Get request has been rejected';
@@ -813,6 +813,46 @@ class Member {
       if ($query->execute()) {
         if ($query->rowCount() > 0) {
           return true;
+        }
+      } else {
+        $query->closeCursor();
+        addError("Erreur lors de l'exécution de la requète SQL", $errArray);
+      }
+    } catch (Exception $e) {
+      addError($e, $errArray, true);
+    }
+    return false;
+  }
+
+  /**
+   * Récupérer la liste des membre en fonction de la
+   * recherche et ou les 50 derniers
+   *
+   * @return      array|boolean array contenant les membres <br>
+   *                            False: aucun résultat ou échec
+   * @param       array $errArray Tableau d'erreurs.
+   * @param       string $queryRequest contenu de la recherche
+   *
+   * @since 1.2
+   *
+   * @author      Jérémi N 'EndMove'
+   */
+  public function search(&$errArray, $queryRequest = null) {
+    try {
+      if (empty($queryRequest)) {
+        $query = $this->bdd->prepare("SELECT *
+                                      FROM compte
+                                      LIMIT 50");
+      } else {
+        $query = $this->bdd->prepare("SELECT *
+                                      FROM compte
+                                      WHERE nom like :query OR prenom like :query OR couriel like :query OR login like :query
+                                      LIMIT 50");
+        $query->bindValue(':query', '%'.$queryRequest.'%', PDO::PARAM_STR);
+      }
+      if ($query->execute()) {
+        if ($query->rowCount() > 0) {
+          return $query->fetchAll(PDO::FETCH_ASSOC);
         }
       } else {
         $query->closeCursor();

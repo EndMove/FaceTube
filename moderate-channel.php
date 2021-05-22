@@ -1,12 +1,12 @@
 <?php
-include("php/includes/pages/moderate-video.inc.php");
+include("php/includes/pages/moderate-channel.inc.php");
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <!-- Header -->
   <?php include("php/includes/head.inc.php"); ?>
-  <title><?php echo CONFIG['websiteName'] ?> | Modérer vidéo</title>
+  <title><?php echo CONFIG['websiteName'] ?> | Modérer chaîne</title>
   <!-- End Header -->
 </head>
 <body>
@@ -17,11 +17,11 @@ include("php/includes/pages/moderate-video.inc.php");
 </header>
 
 <main>
-  <h1 class="text-center">Modérer une vidéo</h1>
+  <h1 class="text-center">Modérer une chaîne</h1>
   <?php showError($infoErrors); showSuccess($infoSucc); ?>
   <form id="form" method="POST" action="<?php echo $formAction; ?>">
     <div class="field">
-      <label for="blocked">Le statut de la vidéo ?</label>
+      <label for="blocked">Le statut de la chaîne ?</label>
       <select id="blocked" name="blocked" required>
         <option value="blocked" <?php echo $block ? 'selected' : ''; ?>>Bloqué</option>
         <option value="unblocked" <?php echo $block ? '' : 'selected'; ?>>Débloqué</option>

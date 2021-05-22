@@ -31,7 +31,17 @@ include("php/includes/pages/channel.inc.php");
     </div>
 
     <section>
-      <h2>Vidéos de la chaîne</h2>
+      <div class="flex action-button">
+        <h2>Vidéos de la chaîne</h2>
+        <?php echo (!$channel->ispublic) ? '<p>(Privée)</p>' : ''; ?>
+        <?php if ($mine) { ?>
+          <a href="<?php echo 'edit-channel.php?id=' . $channel->id; ?>" target="_blank"><i class="fas fa-edit"></i></a>
+          <a href="<?php echo 'edit-video.php?ch=' . $channel->id; ?>"><i class="fas fa-plus"></i></a>
+        <?php }
+        if (isAdmin()) { ?>
+          <a href="<?php echo 'moderate-channel.php?id=' . $channel->id; ?>" target="_blank"><i class="fas fa-user-cog"></i></a>
+        <?php } ?>
+      </div>
 
       <?php showSuccess($infoSucc); showError($infoErrors); ?>
 
