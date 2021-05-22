@@ -23,6 +23,7 @@ include("php/includes/pages/moderate-channel.inc.php");
     <div class="field">
       <label for="blocked">Le statut de la chaîne ?</label>
       <select id="blocked" name="blocked" required>
+        <option value="">== Choisi une option ==</option>
         <option value="blocked" <?php echo $block ? 'selected' : ''; ?>>Bloqué</option>
         <option value="unblocked" <?php echo $block ? '' : 'selected'; ?>>Débloqué</option>
       </select>

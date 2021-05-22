@@ -30,6 +30,7 @@ include("php/includes/pages/edit-channel.inc.php");
       <div class="field">
         <label for="public">La chaine est elle public ?</label>
         <select id="public" name="public" required>
+          <option value="">== Choisi une option ==</option>
           <option value="public" <?php echo $public ? 'selected' : ''; ?>>Publique</option>
           <option value="private" <?php echo $public ? '' : 'selected'; ?>>Privée</option>
         </select>

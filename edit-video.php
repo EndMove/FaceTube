@@ -27,6 +27,7 @@ include("php/includes/pages/edit-video.inc.php");
       <div class="field">
         <label for="channel">Chaîne de publication</label>
         <select id="channel" name="channel" required>
+          <option value="">== Choisi une option ==</option>
         <?php foreach ($channels as $ch) { ?>
           <option value="<?php echo $ch->id; ?>" <?php echo (isset($fk_channel) && $fk_channel == $ch->id) ? 'selected' : ''; ?>><?php echo $ch->name; ?></option>
         <?php } ?>
@@ -42,7 +43,7 @@ include("php/includes/pages/edit-video.inc.php");
         <label for="html_fragment" class="required">HTML5 Fragment</label><input type="text" id="html_fragment" name="html_fragment" placeholder="<iframe>...</iframe>" value='<?php echo isset($fragment) ? htmlspecialchars_decode($fragment) : ''; ?>' required>
       </div>
       <div class="field">
-        <label for="time" class="required">Durée vidéo (hh:mm:ss)</label><input type="time" id="time" step="1" name="time" placeholder="00:15:00" value="<?php echo isset($duration) ? $duration : ''; ?>" required>
+        <label for="time" class="required">Durée vidéo (hh:mm:ss)</label><input type="time" id="time" step="1" name="time" value="<?php echo isset($duration) ? $duration : ''; ?>" required>
       </div>
       <div class="field">
         <label for="banner" class="required">Mignature</label><input type="file" id="banner" name="banner" required>

@@ -10,7 +10,14 @@ include ROOT . '/php/config/config.php';
 date_default_timezone_set(CONFIG['websiteTimezone']);
 
 # Session dossier de travail
-session_set_cookie_params(['path'=>CONFIG['websiteFolder']]);
+$currentCookieParams = session_get_cookie_params();
+session_set_cookie_params(
+  $currentCookieParams["lifetime"],
+  CONFIG['websiteFolder'],
+  $currentCookieParams["domain"],
+  $currentCookieParams["secure"],
+  $currentCookieParams["httponly"]
+);
 session_start();
 
 /*=========================================================================*
