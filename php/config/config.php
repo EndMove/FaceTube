@@ -21,9 +21,9 @@ const CONFIG = array(
     "smtpenabled"         => true,
     "smtpencryption"      => "tls",
     "smtpauthentication"  => true,
-    "smtphost"            => "mail31.lwspanel.com",
-    "smtpusername"        => "contact@endmove.eu",
-    "smtppassword"        => 'wZ7$jn4xPM',
+    "smtphost"            => "", # The removed crediential has expired since 2023 no need to continue trying
+    "smtpusername"        => "", # The removed crediential has expired since 2023 no need to continue trying
+    "smtppassword"        => '', # The removed crediential has expired since 2023 no need to continue trying
     "smtpport"            => 587,
     "smtpdebug"           => false,
   ),
@@ -37,7 +37,7 @@ const CONFIG = array(
     )
   ),
   "recaptchaV2" => array(                         # Configuration ReCaptchaV2
-    "recaptchasitekey" => "6Lem0sgaAAAAADRCFgeWn5nfObvx9_ip_sxE64tF",
-    "recaptchasecret" => "6Lem0sgaAAAAAHwpDYBZ7rXYbJ3p8hJ1ybvyppkT"
+    "recaptchasitekey" => "",    # The removed crediential has expired since 2023 no need to continue trying
+    "recaptchasecret" => ""      # The removed crediential has expired since 2023 no need to continue trying
   ),
 );
